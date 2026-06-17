@@ -10,7 +10,6 @@ const PG_POOL = Symbol('PG_POOL');
 export type DrizzleDB = NodePgDatabase<typeof schemas>;
 
 
-
 @Module({
     imports: [ConfigModule],
     providers: [

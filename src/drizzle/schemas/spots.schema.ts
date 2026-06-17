@@ -1,6 +1,9 @@
+import { uuid } from "drizzle-orm/pg-core";
 import { pgTable, varchar } from "drizzle-orm/pg-core";
 
 export const spotsTable = pgTable("spots", {
-    id: varchar().primaryKey(),
-    //
+    id: uuid().primaryKey().defaultRandom(),
+    alias: varchar().notNull(),
+    description: varchar()
+    
 })
