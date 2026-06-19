@@ -1,4 +1,4 @@
-import {spotsTable} from "./spots.schema"
+import { spotsTable } from './spots.schema';
+import {spotsImages} from "./spots-images.schema"
 
-
-export {spotsTable}
+export { spotsTable, spotsImages };

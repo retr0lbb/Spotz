@@ -1,1 +1,20 @@
 GET http://localhost:3000
+
+###
+POST http://localhost:3000/spots
+Content-Type: application/json
+
+{
+    "lat": 4.1726784,
+    "lon": 73.5132004,
+    "alias": "Pico da colina Maldivas",
+    "description": "Vista em cima de uma cachoeira de uma praia reluzente ao por do sol",
+    "address": "R. Abdul, 55632 EAST",
+    "photos": [
+        {
+            "mime_type": "png",
+            "bytes": 212121,
+            "key": "/photos/maldives"
+        }
+    ]
+}
