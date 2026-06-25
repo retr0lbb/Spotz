@@ -1,7 +1,18 @@
 import { unique } from 'drizzle-orm/pg-core';
+import { customType } from 'drizzle-orm/pg-core';
 import { timestamp } from 'drizzle-orm/pg-core';
 import { index } from 'drizzle-orm/pg-core';
 import { uuid, text, pgTable, varchar, numeric } from 'drizzle-orm/pg-core';
+
+
+const geography = customType<{ data: string }>({
+  dataType() {
+    return 'geography(Point,4326)';
+  },
+  toDriver(value: string) {
+    return value;
+  },
+});
 
 export const spotsTable = pgTable(
   'spots',
@@ -10,20 +21,13 @@ export const spotsTable = pgTable(
     alias: varchar().notNull(),
     description: varchar(),
 
-    lat: numeric('lat', {
-      precision: 9,
-      scale: 6,
-    }).notNull(),
-    lon: numeric('lon', {
-      precision: 9,
-      scale: 6,
-    }).notNull(),
+    location: geography("location").notNull(),
     address: text(),
-    createdAt: timestamp().defaultNow(),
+    createdAt: timestamp("created_at").defaultNow(),
   },
   (table) => [
-    index('spots_lat_lon_idx').on(table.lat, table.lon),
+    index('spots_location_idx').using("gist", table.location),
 
-    unique('spots_alias_lat_lon_unique').on(table.alias, table.lon, table.lat),
+    unique('spots_alias_location_unique').on(table.alias, table.location),
   ],
 );

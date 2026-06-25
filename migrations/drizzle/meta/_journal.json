@@ -5,22 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1781724021351,
-      "tag": "0000_lumpy_iron_patriot",
+      "when": 1782361397237,
+      "tag": "0000_dazzling_sister_grimm",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1781725834685,
-      "tag": "0001_majestic_yellow_claw",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1781846875346,
-      "tag": "0002_clean_makkari",
+      "when": 1782361645417,
+      "tag": "0001_serious_sway",
       "breakpoints": true
     }
   ]

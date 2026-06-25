@@ -1,17 +1,16 @@
 services:
   spots_db:
-    image: bitnami/postgresql:latest
+    image: postgis/postgis:16-3.4
     container_name: spots_db
     ports:
       - "5432:5432"
     environment:
-      - POSTGRESQL_USERNAME=docker
-      - POSTGRESQL_PASSWORD=docker
-      - POSTGRESQL_DATABASE=spotz
+      - POSTGRES_USER=docker        # era POSTGRES_USERNAME
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=spotz           # era POSTGRES_DATABASE
     volumes:
-      - db_data:/bitnami/postgresql
+      - db_data:/var/lib/postgresql/data   # era /bitnami/postgresql
     restart: no
-  
 
 volumes:
   db_data:

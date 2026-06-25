@@ -1,9 +1,150 @@
 {
-  "id": "a650037d-f059-451e-b974-4be1617a5f96",
-  "prevId": "fcff3b1d-c220-4842-8026-0dbdc6e0f87e",
+  "id": "ba500f66-b011-4378-b42b-f67037fb7b1c",
+  "prevId": "37c1d2ba-e3e9-4bfd-bb92-52d8e75a51d8",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
+    "public.images_metadata": {
+      "name": "images_metadata",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "s3_key": {
+          "name": "s3_key",
+          "type": "varchar(512)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "mime_type": {
+          "name": "mime_type",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "size_bytes": {
+          "name": "size_bytes",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "images_metadata_s3_key_unique": {
+          "name": "images_metadata_s3_key_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "s3_key"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.spots_images": {
+      "name": "spots_images",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "spot_id": {
+          "name": "spot_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "image_id": {
+          "name": "image_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "spots_images_spot_id_spots_id_fk": {
+          "name": "spots_images_spot_id_spots_id_fk",
+          "tableFrom": "spots_images",
+          "tableTo": "spots",
+          "columnsFrom": [
+            "spot_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "spots_images_image_id_images_metadata_id_fk": {
+          "name": "spots_images_image_id_images_metadata_id_fk",
+          "tableFrom": "spots_images",
+          "tableTo": "images_metadata",
+          "columnsFrom": [
+            "image_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "spots_images_image_id_unique": {
+          "name": "spots_images_image_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "image_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.spots": {
       "name": "spots",
       "schema": "",
@@ -27,15 +168,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "lat": {
-          "name": "lat",
-          "type": "numeric(9, 6)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "lon": {
-          "name": "lon",
-          "type": "numeric(9, 6)",
+        "location": {
+          "name": "location",
+          "type": "geography(Point,4326)",
           "primaryKey": false,
           "notNull": true
         },
@@ -45,8 +180,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "createdAt": {
-          "name": "createdAt",
+        "created_at": {
+          "name": "created_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
@@ -54,17 +189,11 @@
         }
       },
       "indexes": {
-        "spots_lat_lon_idx": {
-          "name": "spots_lat_lon_idx",
+        "spots_location_idx": {
+          "name": "spots_location_idx",
           "columns": [
             {
-              "expression": "lat",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "lon",
+              "expression": "location",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -72,20 +201,19 @@
           ],
           "isUnique": false,
           "concurrently": false,
-          "method": "btree",
+          "method": "gist",
           "with": {}
         }
       },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "spots_alias_lat_lon_unique": {
-          "name": "spots_alias_lat_lon_unique",
+        "spots_alias_location_unique": {
+          "name": "spots_alias_location_unique",
           "nullsNotDistinct": false,
           "columns": [
             "alias",
-            "lon",
-            "lat"
+            "location"
           ]
         }
       },

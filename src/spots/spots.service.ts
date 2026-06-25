@@ -2,9 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DRIZZLE, type DrizzleDB } from '../drizzle/drizzle.module';
 import { CreateSpotDTO } from './dto/create-spot.dto';
 import { spotsTable } from '../drizzle/schemas';
-import { spotsImages } from '../drizzle/schemas/spots-images.schema';
-import { UploadImageDto } from './dto/upload-image.dto';
-import { eq } from 'drizzle-orm';
 
 @Injectable()
 export class SpotsService {
@@ -15,16 +12,16 @@ export class SpotsService {
         const spot = await this.db
           .insert(spotsTable)
           .values({
-            lat: String(payload.lat),
-            lon: String(payload.lon),
+            location:`POINT(${payload.lon} ${payload.lat})`,
             address: payload.address,
             description: payload.description,
             alias: payload.alias,
-          })
+          }).returning()
+
+          return spot
     } catch (error) {
       console.log(error)
     }
   }
-
 
 }

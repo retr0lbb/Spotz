@@ -1,8 +1,8 @@
 import z from 'zod/v4';
 
 export const createSpotSchema = z.object({
-  lat: z.number(),
-  lon: z.number(),
+  lat: z.string(),
+  lon: z.string(),
   alias: z.string().nonempty(),
   description: z.string().nullable().optional(),
   address: z.string().nonempty()
