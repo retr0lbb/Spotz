@@ -7,6 +7,8 @@ import { SpotsModule } from './spots/spots.module';
 import { S3Module } from './s3/s3.module';
 import { ImagesModule } from './images/images.module';
 import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { UsersModule } from './users/users.module';
     S3Module,
     ImagesModule,
     UsersModule,
+    AuthModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [AppService],

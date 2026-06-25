@@ -1,30 +1,36 @@
 import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ImagesService } from './images.service';
-import { type ImageMetadataDTO, imageMetadataSchema } from './dto/image-metadata.dto';
+import {
+  type ImageMetadataDTO,
+  imageMetadataSchema,
+} from './dto/image-metadata.dto';
 
 @Controller('spots/:spotId/images')
 export class ImagesController {
-    constructor(private readonly imageService: ImagesService){}
+  constructor(private readonly imageService: ImagesService) {}
 
-    @Post("presigned")
-    async generatePostUrl(@Param("spotId") spotId: string, @Body() body: ImageMetadataDTO){
-        const parsedBody = imageMetadataSchema.parse(body)
+  @Post('presigned')
+  async generatePostUrl(
+    @Param('spotId') spotId: string,
+    @Body() body: ImageMetadataDTO,
+  ) {
+    const parsedBody = imageMetadataSchema.parse(body);
 
-        const result = await this.imageService.generateUploadUrl(spotId, parsedBody)
+    const result = await this.imageService.generateUploadUrl(
+      spotId,
+      parsedBody,
+    );
 
-        return result
-    }
+    return result;
+  }
 
-    @Post(":imageId/confirm")
-    async confirmUpload(@Param("imageId") imageId: string){
+  @Post(':imageId/confirm')
+  async confirmUpload(@Param('imageId') imageId: string) {
+    return await this.imageService.confirmUpload(imageId);
+  }
 
-        return await this.imageService.confirmUpload(imageId)
-    }
-
-    @Get()
-    async getSpotImages(@Param('spotId') spotId: string){
-        return await this.imageService.getSpotImages(spotId)
-    }
-
-
+  @Get()
+  async getSpotImages(@Param('spotId') spotId: string) {
+    return await this.imageService.getSpotImages(spotId);
+  }
 }

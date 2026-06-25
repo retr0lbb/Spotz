@@ -52,3 +52,22 @@ POST {{baseUrl}}/spots/{{spotId}}/images/{{presigned.response.body.imageId}}/con
 
 ### Listar imagens do spot
 GET {{baseUrl}}/spots/{{spotId}}/images
+
+###
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+    "username": "Retr0man",
+    "email": "retr0lbb@gmail.com",
+    "password": "123123123"
+}
+
+###
+POST  {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "retr0lbb@gmail.com",
+    "password": "123123133"
+}

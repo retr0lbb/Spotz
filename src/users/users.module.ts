@@ -6,6 +6,6 @@ import { DrizzleModule } from '../drizzle/drizzle.module';
 @Module({
   controllers: [UsersController],
   providers: [UsersService],
-  imports: [DrizzleModule]
+  imports: [DrizzleModule],
 })
 export class UsersModule {}
