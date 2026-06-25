@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { ImagesService } from './images.service';
 import { type ImageMetadataDTO, imageMetadataSchema } from './dto/image-metadata.dto';
 
@@ -21,6 +21,10 @@ export class ImagesController {
         return await this.imageService.confirmUpload(imageId)
     }
 
+    @Get()
+    async getSpotImages(@Param('spotId') spotId: string){
+        return await this.imageService.getSpotImages(spotId)
+    }
 
 
 }

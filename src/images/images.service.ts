@@ -1,7 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { S3Service } from '../s3/s3.service';
 import { DRIZZLE, type DrizzleDB } from '../drizzle/drizzle.module';
-import { ImageMetadataDTO } from './dto/image-metadata.dto';
+import { ImageMetadataDTO, imageMetadataSchema } from './dto/image-metadata.dto';
 import { imagesMetadata, spotsImages, spotsTable } from '../drizzle/schemas';
 import { eq } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
@@ -65,5 +65,32 @@ export class ImagesService {
       .update(imagesMetadata)
       .set({ status: 'active', updatedAt: new Date() })
       .where(eq(imagesMetadata.id, imageId));
+  }
+
+  async getSpotImages(spotId: string){
+    const [spot] = await this.db.select()
+                                .from(spotsTable)
+                                .where(eq(spotsTable.id, spotId))
+
+    if(!spot){
+      throw new NotFoundException("Spot not found")
+    }
+
+    const images = await this.db.select()
+      .from(spotsImages)
+      .innerJoin(imagesMetadata, eq(spotsImages.imageId, imagesMetadata.id))
+      .where(eq(spotsImages.spotId, spotId));
+
+
+    return Promise.all(
+      images.map(async ({images_metadata }) => ({
+        id: images_metadata.id,
+        url: await this.s3service.getPresignedUrl(BUCKET, images_metadata.s3Key),
+        mimeType: images_metadata.mimeType,
+        createdAt: images_metadata.createdAt,
+      }))
+    )
+
+    
   }
 }
