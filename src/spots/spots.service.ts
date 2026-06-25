@@ -57,4 +57,8 @@ export class SpotsService {
 
     return spot;
   }
+
+  async deleteSpot(id: string){
+    await this.db.delete(spotsTable).where(eq(spotsTable.id, id))
+  }
 }

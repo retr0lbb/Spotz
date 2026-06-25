@@ -28,3 +28,8 @@ Content-Type: application/json
 {
     "alias": "Pico da neblina"
 }
+
+
+
+###
+DELETE  http://localhost:3000/spots/18400a26-58a3-4cf9-b11c-d6a5a80d62e8
