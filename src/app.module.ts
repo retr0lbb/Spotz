@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { SpotsModule } from './spots/spots.module';
 import { S3Module } from './s3/s3.module';
 import { ImagesModule } from './images/images.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ImagesModule } from './images/images.module';
     SpotsModule,
     S3Module,
     ImagesModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
