@@ -1,6 +1,7 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { createSpotSchema, type CreateSpotDTO } from './dto/create-spot.dto';
 import { SpotsService } from './spots.service';
+import type { GetAllSpotsQuery } from './dto/getAllSpots.dto';
 
 @Controller('spots')
 export class SpotsController {
@@ -8,10 +9,16 @@ export class SpotsController {
 
     @Post()
     async createSpot(@Body() body: CreateSpotDTO){
-        console.log(body)
 
         const data = createSpotSchema.parse(body)
 
         await this.spotsService.createSpot(data)
+    }
+
+    @Get()
+    async getSpot(@Query() query: GetAllSpotsQuery){
+        const result = await this.spotsService.getAllSpots(query)
+
+        return result
     }
 }
