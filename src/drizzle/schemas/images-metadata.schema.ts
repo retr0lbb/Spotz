@@ -1,4 +1,10 @@
-import { uuid, pgTable, varchar, integer, timestamp } from 'drizzle-orm/pg-core';
+import {
+  uuid,
+  pgTable,
+  varchar,
+  integer,
+  timestamp,
+} from 'drizzle-orm/pg-core';
 
 export const imagesMetadata = pgTable('images_metadata', {
   id: uuid().primaryKey().defaultRandom(),

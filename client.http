@@ -14,7 +14,17 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/spots
-    ?lat=4.1726784
-    &lon=73.5132004
+    ?lat=4.1766985
+    &lon=73.51321006
     &radius=500
 Content-Type: application/json
+
+
+
+###
+PUT http://localhost:3000/spots/18400a26-58a3-4cf9-b11c-d6a5a80d62e8
+Content-Type: application/json
+
+{
+    "alias": "Pico da neblina"
+}

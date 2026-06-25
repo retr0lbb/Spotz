@@ -25,8 +25,8 @@ export type DrizzleDB = NodePgDatabase<typeof schemas>;
       provide: DRIZZLE,
       inject: [PG_POOL],
       useFactory: async (pool: Pool) => {
-        await setupPostGIS(pool)
-        return drizzle(pool, { schema: schemas })
+        await setupPostGIS(pool);
+        return drizzle(pool, { schema: schemas });
       },
     },
   ],

@@ -5,7 +5,7 @@ export const createSpotSchema = z.object({
   lon: z.string(),
   alias: z.string().nonempty(),
   description: z.string().nullable().optional(),
-  address: z.string().nonempty()
+  address: z.string().nonempty(),
 });
 
 export interface CreateSpotDTO extends z.infer<typeof createSpotSchema> {}

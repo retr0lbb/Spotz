@@ -1,4 +1,4 @@
-import { Pool } from "pg"
+import { Pool } from 'pg';
 
 export async function setupPostGIS(pool: Pool): Promise<void> {
   const client = await pool.connect();

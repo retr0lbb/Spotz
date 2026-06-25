@@ -1,24 +1,34 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { createSpotSchema, type CreateSpotDTO } from './dto/create-spot.dto';
 import { SpotsService } from './spots.service';
 import type { GetAllSpotsQuery } from './dto/getAllSpots.dto';
+import type { UpdateSpotDTO, UpdateSpotParamsDTO } from './dto/update-spot.dto';
 
 @Controller('spots')
 export class SpotsController {
-    constructor(private readonly spotsService: SpotsService){}
+  constructor(private readonly spotsService: SpotsService) {}
 
-    @Post()
-    async createSpot(@Body() body: CreateSpotDTO){
+  @Post()
+  async createSpot(@Body() body: CreateSpotDTO) {
+    const data = createSpotSchema.parse(body);
 
-        const data = createSpotSchema.parse(body)
+    await this.spotsService.createSpot(data);
+  }
 
-        await this.spotsService.createSpot(data)
-    }
+  @Get()
+  async getSpot(@Query() query: GetAllSpotsQuery) {
+    const result = await this.spotsService.getAllSpots(query);
 
-    @Get()
-    async getSpot(@Query() query: GetAllSpotsQuery){
-        const result = await this.spotsService.getAllSpots(query)
+    return result;
+  }
 
-        return result
-    }
+  @Put('/:id')
+  async updateSpot(
+    @Param() params: UpdateSpotParamsDTO,
+    @Body() body: UpdateSpotDTO,
+  ) {
+    const result = await this.spotsService.updateSpot(params.id, body);
+
+    return result;
+  }
 }
