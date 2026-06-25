@@ -12,8 +12,6 @@ export const updateSpotParamsSchema = z.object({
   id: z.uuid(),
 });
 
-export interface UpdateSpotDTO extends z.infer<typeof updateSpotSchema> {}
+export type UpdateSpotDTO = z.infer<typeof updateSpotSchema>;
 
-export interface UpdateSpotParamsDTO extends z.infer<
-  typeof updateSpotParamsSchema
-> {}
+export type UpdateSpotParamsDTO = z.infer<typeof updateSpotParamsSchema>;

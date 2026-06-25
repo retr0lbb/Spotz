@@ -2,7 +2,7 @@ import { unique } from 'drizzle-orm/pg-core';
 import { customType } from 'drizzle-orm/pg-core';
 import { timestamp } from 'drizzle-orm/pg-core';
 import { index } from 'drizzle-orm/pg-core';
-import { uuid, text, pgTable, varchar, numeric } from 'drizzle-orm/pg-core';
+import { uuid, text, pgTable, varchar } from 'drizzle-orm/pg-core';
 
 const geography = customType<{ data: string }>({
   dataType() {

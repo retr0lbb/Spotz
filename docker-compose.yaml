@@ -5,12 +5,26 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=docker        # era POSTGRES_USERNAME
+      - POSTGRES_USER=docker
       - POSTGRES_PASSWORD=docker
-      - POSTGRES_DB=spotz           # era POSTGRES_DATABASE
+      - POSTGRES_DB=spotz
     volumes:
-      - db_data:/var/lib/postgresql/data   # era /bitnami/postgresql
+      - db_data:/var/lib/postgresql/data
+    restart: no
+  minio:
+    image: minio/minio
+    container_name: spots_minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+    volumes:
+      - minio_data:/data
+    command: server /data --console-address ":9001"
     restart: no
 
 volumes:
   db_data:
+  minio_data:

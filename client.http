@@ -1,35 +1,54 @@
-GET http://localhost:3000
+@baseUrl = http://localhost:3000
+@spotId = 21110b2c-6f01-4684-9a60-fda4410afd43
 
-###
-POST http://localhost:3000/spots
+### Health check
+GET {{baseUrl}}
+
+### Criar spot
+POST {{baseUrl}}/spots
 Content-Type: application/json
 
 {
-    "lat": "4.1726784",
+    "lat": "4.2726784",
     "lon": "73.5132004",
     "alias": "Pico da colina Maldivas",
     "description": "Vista em cima de uma cachoeira de uma praia reluzente ao por do sol",
     "address": "R. Abdul, 55632 EAST"
 }
 
-###
-GET http://localhost:3000/spots
-    ?lat=4.1766985
-    &lon=73.51321006
-    &radius=500
-Content-Type: application/json
+### Buscar spots por raio
+GET {{baseUrl}}/spots?lat=4.2766985&lon=73.51321006&radius=5000
 
-
-
-###
-PUT http://localhost:3000/spots/18400a26-58a3-4cf9-b11c-d6a5a80d62e8
+### Atualizar spot
+PUT {{baseUrl}}/spots/{{spotId}}
 Content-Type: application/json
 
 {
     "alias": "Pico da neblina"
 }
 
+### Deletar spot
+DELETE {{baseUrl}}/spots/{{spotId}}
 
+### Gerar presigned URL para upload
+# @name presigned
+POST {{baseUrl}}/spots/{{spotId}}/images/presigned
+Content-Type: application/json
 
-###
-DELETE  http://localhost:3000/spots/18400a26-58a3-4cf9-b11c-d6a5a80d62e8
+{
+    "mimeType": "image/jpeg",
+    "sizeBytes": 15728640,
+    "originalName": "photo.jpeg"
+}
+
+### Upload da imagem (cole a uploadUrl retornada acima)
+PUT {{presigned.response.body.uploadUrl}}
+Content-Type: image/jpeg
+
+< ./test.png
+
+### Confirmar upload
+POST {{baseUrl}}/spots/{{spotId}}/images/{{presigned.response.body.imageId}}/confirm
+
+### Listar imagens do spot
+GET {{baseUrl}}/spots/{{spotId}}/images

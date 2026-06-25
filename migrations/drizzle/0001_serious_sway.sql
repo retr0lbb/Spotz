@@ -1,1 +1,0 @@
-ALTER TABLE "spots" RENAME COLUMN "createdAt" TO "created_at";

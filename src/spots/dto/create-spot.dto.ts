@@ -8,4 +8,4 @@ export const createSpotSchema = z.object({
   address: z.string().nonempty(),
 });
 
-export interface CreateSpotDTO extends z.infer<typeof createSpotSchema> {}
+export type CreateSpotDTO = z.infer<typeof createSpotSchema>;
