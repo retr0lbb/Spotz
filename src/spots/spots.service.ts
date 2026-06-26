@@ -5,10 +5,17 @@ import { UpdateSpotDTO } from './dto/update-spot.dto';
 import { spotsTable } from '../drizzle/schemas';
 import { GetAllSpotsQuery } from './dto/getAllSpots.dto';
 import { sql, eq } from 'drizzle-orm';
+import { S3Service } from '../s3/s3.service';
+import { imageMetadataSchema } from '../images/dto/image-metadata.dto';
+
+const BUCKET = 'spots';
 
 @Injectable()
 export class SpotsService {
-  constructor(@Inject(DRIZZLE) private readonly db: DrizzleDB) {}
+  constructor(
+    @Inject(DRIZZLE) private readonly db: DrizzleDB,
+    private readonly s3service: S3Service,
+  ) {}
 
   async createSpot(payload: CreateSpotDTO) {
     const spot = await this.db
@@ -59,6 +66,19 @@ export class SpotsService {
   }
 
   async deleteSpot(id: string) {
-    await this.db.delete(spotsTable).where(eq(spotsTable.id, id));
+    const [spot] = await this.db
+      .select()
+      .from(spotsTable)
+      .where(eq(spotsTable.id, id));
+
+    if (!spot) {
+      return;
+    }
+
+    await this.db.transaction(async (tx) => {
+      await this.s3service.deleteFolder(BUCKET, `spots/${spot.id}/`);
+
+      await tx.delete(spotsTable).where(eq(spotsTable.id, spot.id));
+    });
   }
 }

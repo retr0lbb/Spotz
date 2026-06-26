@@ -22,7 +22,7 @@ export class TokenService {
       username: userName,
     };
     return this.jwtService.sign(payload, {
-      expiresIn: this.configService.get('JWT_EXPIRATION', "15m"),
+      expiresIn: this.configService.get('JWT_EXPIRATION', '15m'),
     });
   }
 }

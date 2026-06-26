@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3000
-@spotId = 3996b0e5-8b64-4670-a3e7-90b2bbacb62d
+@spotId = 74769405-09bc-412f-ac63-0f9f066530cf
 
 ### Health check
 GET {{baseUrl}}
@@ -72,6 +72,6 @@ Content-Type: application/json
     "password": "123123123"
 }
 
-###
+### GET user info
 GET {{baseUrl}}/users/me
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMWY3NDdkZi0wNWU1LTRkNGItODkxYi05M2QzZWU0NmI3Y2IiLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJSZXRyMG1hbiIsImlhdCI6MTc4MjQ0MzYxOCwiZXhwIjoxNzgyNDQ0NTE4fQ.TgbL57i6lmHH2tvI9qz9b7ThY8I79XdMHe21zPfrMHY

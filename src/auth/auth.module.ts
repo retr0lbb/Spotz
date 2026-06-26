@@ -18,7 +18,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
         signOptions: { expiresIn: '15m' },
       }),
     }),
-    ConfigModule
+    ConfigModule,
   ],
   providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
