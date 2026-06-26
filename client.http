@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3000
-@spotId = 21110b2c-6f01-4684-9a60-fda4410afd43
+@spotId = 3996b0e5-8b64-4670-a3e7-90b2bbacb62d
 
 ### Health check
 GET {{baseUrl}}
@@ -11,9 +11,9 @@ Content-Type: application/json
 {
     "lat": "4.2726784",
     "lon": "73.5132004",
-    "alias": "Pico da colina Maldivas",
-    "description": "Vista em cima de uma cachoeira de uma praia reluzente ao por do sol",
-    "address": "R. Abdul, 55632 EAST"
+    "alias": "Lake Winston",
+    "description": "Vista do lago winston na escocia. vista de cima do lago ideal para um piquenique",
+    "address": "R. Royal vista, 1829. Aurora lane"
 }
 
 ### Buscar spots por raio
@@ -36,16 +36,16 @@ POST {{baseUrl}}/spots/{{spotId}}/images/presigned
 Content-Type: application/json
 
 {
-    "mimeType": "image/jpeg",
+    "mimeType": "image/jpg",
     "sizeBytes": 15728640,
-    "originalName": "photo.jpeg"
+    "originalName": "test.jpg"
 }
 
 ### Upload da imagem (cole a uploadUrl retornada acima)
 PUT {{presigned.response.body.uploadUrl}}
-Content-Type: image/jpeg
+Content-Type: image/jpg
 
-< ./test.png
+< ./test.jpg
 
 ### Confirmar upload
 POST {{baseUrl}}/spots/{{spotId}}/images/{{presigned.response.body.imageId}}/confirm
