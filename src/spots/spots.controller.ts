@@ -51,9 +51,10 @@ export class SpotsController {
     return result;
   }
 
+  @UseGuards(JwtGuard)
   @Delete('/:id')
-  async deleteSpot(@Param() param: { id: string }) {
-    await this.spotsService.deleteSpot(param.id);
+  async deleteSpot(@CurrentUser() user: JWTClaims, @Param() param: { id: string }) {
+    await this.spotsService.deleteSpot(user.sub, param.id);
 
     return 'ok';
   }

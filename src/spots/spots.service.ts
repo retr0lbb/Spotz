@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { DRIZZLE, type DrizzleDB } from '../drizzle/drizzle.module';
 import { CreateSpotDTO } from './dto/create-spot.dto';
 import { UpdateSpotDTO } from './dto/update-spot.dto';
@@ -71,11 +71,15 @@ export class SpotsService {
     return spot;
   }
 
-  async deleteSpot(id: string) {
+  async deleteSpot(userId: string, id: string) {
     const [spot] = await this.db
       .select()
       .from(spotsTable)
       .where(eq(spotsTable.id, id));
+    
+    if(spot.userId !== userId){
+      throw new ForbiddenException("Cannot delete a project that is not yours")
+    }
 
     if (!spot) {
       return;
