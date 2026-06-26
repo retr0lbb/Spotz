@@ -3,6 +3,7 @@ import { customType } from 'drizzle-orm/pg-core';
 import { timestamp } from 'drizzle-orm/pg-core';
 import { index } from 'drizzle-orm/pg-core';
 import { uuid, text, pgTable, varchar } from 'drizzle-orm/pg-core';
+import { usersTable } from './user.schema';
 
 const geography = customType<{ data: string }>({
   dataType() {
@@ -17,6 +18,9 @@ export const spotsTable = pgTable(
   'spots',
   {
     id: uuid().primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+    .notNull()
+    .references(() => usersTable.id, { onDelete: 'set null' }),
     alias: varchar().notNull(),
     description: varchar(),
 

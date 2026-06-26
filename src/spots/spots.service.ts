@@ -1,12 +1,11 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { DRIZZLE, type DrizzleDB } from '../drizzle/drizzle.module';
 import { CreateSpotDTO } from './dto/create-spot.dto';
 import { UpdateSpotDTO } from './dto/update-spot.dto';
-import { spotsTable } from '../drizzle/schemas';
+import { spotsTable, usersTable } from '../drizzle/schemas';
 import { GetAllSpotsQuery } from './dto/getAllSpots.dto';
 import { sql, eq } from 'drizzle-orm';
 import { S3Service } from '../s3/s3.service';
-import { imageMetadataSchema } from '../images/dto/image-metadata.dto';
 
 const BUCKET = 'spots';
 
@@ -17,10 +16,17 @@ export class SpotsService {
     private readonly s3service: S3Service,
   ) {}
 
-  async createSpot(payload: CreateSpotDTO) {
+  async createSpot(userId: string, payload: CreateSpotDTO) {
+    const user = await this.db.select().from(usersTable).where(eq(usersTable.id, userId))
+    
+    if(!user){
+      throw new NotFoundException("user not found")
+    }
+
     const spot = await this.db
       .insert(spotsTable)
       .values({
+        userId: userId,
         location: `POINT(${payload.lon} ${payload.lat})`,
         address: payload.address,
         description: payload.description,

@@ -1,6 +1,8 @@
 @baseUrl = http://localhost:3000
 @spotId = 74769405-09bc-412f-ac63-0f9f066530cf
 
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.iyJzdWIiOiJlMWY3NDdkZi0wNWU1LTRkNGItODkxYi05M2QzZWU0NmI3Y2IiLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJSZXRyMG1hbiIsImlhdCI6MTc4MjQ0NjExMSwiZXhwIjoxNzgyNDQ3MDExfQ.0gkL4IsPKsxbk3lmoZHir3fLbkCzcO49if491qmx7ZA
+
 ### Health check
 GET {{baseUrl}}
 
@@ -8,6 +10,7 @@ GET {{baseUrl}}
 ### Criar spot
 POST {{baseUrl}}/spots
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
     "lat": "4.2726784",
@@ -76,7 +79,6 @@ Content-Type: application/json
     "email": "mail@gmail.com",
     "password": "123123123"
 }
-
 
 # ========================== USUARIOS ==========================
 ### PEGA A INFORMACAO DOS USUARIOS

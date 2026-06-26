@@ -7,21 +7,31 @@ import {
   Post,
   Put,
   Query,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { createSpotSchema, type CreateSpotDTO } from './dto/create-spot.dto';
 import { SpotsService } from './spots.service';
 import type { GetAllSpotsQuery } from './dto/getAllSpots.dto';
 import type { UpdateSpotDTO, UpdateSpotParamsDTO } from './dto/update-spot.dto';
+import { JwtGuard } from '../auth/guards/jwt.guard';
+import { CurrentUser } from '../auth/decorator/current-user.decorator';
+import type { JWTClaims } from '../common/services/token-service';
 
 @Controller('spots')
 export class SpotsController {
   constructor(private readonly spotsService: SpotsService) {}
-
+  
+  @UseGuards(JwtGuard)
   @Post()
-  async createSpot(@Body() body: CreateSpotDTO) {
+  async createSpot(@CurrentUser() user: JWTClaims, @Body() body: CreateSpotDTO) {
+
+    if(!user){
+      throw new Error("Yeah user doesnot passed")
+    }
     const data = createSpotSchema.parse(body);
 
-    await this.spotsService.createSpot(data);
+    await this.spotsService.createSpot(user.sub, data );
   }
 
   @Get()
