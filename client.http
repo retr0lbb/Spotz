@@ -59,15 +59,19 @@ Content-Type: application/json
 
 {
     "username": "Retr0man",
-    "email": "retr0lbb@gmail.com",
+    "email": "mail@gmail.com",
     "password": "123123123"
 }
 
-###
+### login
 POST  {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "retr0lbb@gmail.com",
-    "password": "123123133"
+    "email": "mail@gmail.com",
+    "password": "123123123"
 }
+
+###
+GET {{baseUrl}}/users/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMWY3NDdkZi0wNWU1LTRkNGItODkxYi05M2QzZWU0NmI3Y2IiLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJSZXRyMG1hbiIsImlhdCI6MTc4MjQ0MzYxOCwiZXhwIjoxNzgyNDQ0NTE4fQ.TgbL57i6lmHH2tvI9qz9b7ThY8I79XdMHe21zPfrMHY

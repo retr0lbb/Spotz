@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { DrizzleModule } from '../drizzle/drizzle.module';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -17,8 +18,9 @@ import { AuthController } from './auth.controller';
         signOptions: { expiresIn: '15m' },
       }),
     }),
+    ConfigModule
   ],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}
