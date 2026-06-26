@@ -4,6 +4,7 @@
 ### Health check
 GET {{baseUrl}}
 
+# ========================== SPOT ==========================
 ### Criar spot
 POST {{baseUrl}}/spots
 Content-Type: application/json
@@ -30,6 +31,8 @@ Content-Type: application/json
 ### Deletar spot
 DELETE {{baseUrl}}/spots/{{spotId}}
 
+
+# ========================== IMAGENS DO SPOT ==========================
 ### Gerar presigned URL para upload
 # @name presigned
 POST {{baseUrl}}/spots/{{spotId}}/images/presigned
@@ -53,7 +56,9 @@ POST {{baseUrl}}/spots/{{spotId}}/images/{{presigned.response.body.imageId}}/con
 ### Listar imagens do spot
 GET {{baseUrl}}/spots/{{spotId}}/images
 
-###
+
+# ========================== AUTH ==========================
+### REGISTRO
 POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
@@ -72,6 +77,8 @@ Content-Type: application/json
     "password": "123123123"
 }
 
-### GET user info
+
+# ========================== USUARIOS ==========================
+### PEGA A INFORMACAO DOS USUARIOS
 GET {{baseUrl}}/users/me
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMWY3NDdkZi0wNWU1LTRkNGItODkxYi05M2QzZWU0NmI3Y2IiLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJSZXRyMG1hbiIsImlhdCI6MTc4MjQ0MzYxOCwiZXhwIjoxNzgyNDQ0NTE4fQ.TgbL57i6lmHH2tvI9qz9b7ThY8I79XdMHe21zPfrMHY
