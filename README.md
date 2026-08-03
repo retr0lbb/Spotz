@@ -96,3 +96,7 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+
+## Features
+- [ ] permitir que o usuário poste fotos no spot des de que esteja a menos de 100 metros de distancia no futuro trocar para que seja visitado nas ultimas 24 horas.

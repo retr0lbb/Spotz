@@ -52,7 +52,7 @@ export class SpotsService {
     return spots.rows;
   }
 
-  async updateSpot(id: string, payload: UpdateSpotDTO) {
+  async updateSpot(id: string, userId: string, payload: UpdateSpotDTO) {
     const values: Record<string, unknown> = {};
     if (payload.alias !== undefined) values.alias = payload.alias;
     if (payload.description !== undefined)
@@ -62,13 +62,29 @@ export class SpotsService {
       values.location = `POINT(${payload.lon} ${payload.lat})`;
     }
 
+    const [user] = await this.db.select()
+    .from(usersTable)
+    .where(eq(usersTable.id, userId))
+
     const [spot] = await this.db
+      .select()
+      .from(spotsTable)
+      .where(eq(spotsTable.id, id));
+
+    if (!spot){
+      throw new NotFoundException("Spot not found")
+    }
+    if (!user || (spot.userId !== user.id)){
+      throw new NotFoundException("User acc with the spot not found")
+    }
+
+    const [updatedSpot] = await this.db
       .update(spotsTable)
       .set(values)
       .where(eq(spotsTable.id, id))
       .returning();
 
-    return spot;
+    return updatedSpot;
   }
 
   async deleteSpot(userId: string, id: string) {

@@ -17,6 +17,7 @@ import type { UpdateSpotDTO, UpdateSpotParamsDTO } from './dto/update-spot.dto';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import type { JWTClaims } from '../common/services/token-service';
+import type { AddForeignImageParamsDTO } from './dto/add-foreing-image.dto';
 
 @Controller('spots')
 export class SpotsController {
@@ -41,12 +42,14 @@ export class SpotsController {
     return result;
   }
 
+  @UseGuards(JwtGuard)
   @Put('/:id')
   async updateSpot(
+    @CurrentUser() user: JWTClaims,
     @Param() params: UpdateSpotParamsDTO,
     @Body() body: UpdateSpotDTO,
   ) {
-    const result = await this.spotsService.updateSpot(params.id, body);
+    const result = await this.spotsService.updateSpot(params.id, user.sub, body);
 
     return result;
   }
@@ -57,5 +60,14 @@ export class SpotsController {
     await this.spotsService.deleteSpot(user.sub, param.id);
 
     return 'ok';
+  }
+
+  @UseGuards(JwtGuard)
+  @Post(":id/add-post")
+  async addForeignPost(
+    @CurrentUser() user: JWTClaims,
+    @Param() params: AddForeignImageParamsDTO,
+  ){
+    
   }
 }

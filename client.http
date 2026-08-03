@@ -1,10 +1,31 @@
 @baseUrl = http://localhost:3000
-@spotId = 74769405-09bc-412f-ac63-0f9f066530cf
+@spotId = e327b08a-aff9-4086-a38a-1b333c73a2b7
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.iyJzdWIiOiJlMWY3NDdkZi0wNWU1LTRkNGItODkxYi05M2QzZWU0NmI3Y2IiLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJSZXRyMG1hbiIsImlhdCI6MTc4MjQ0NjExMSwiZXhwIjoxNzgyNDQ3MDExfQ.0gkL4IsPKsxbk3lmoZHir3fLbkCzcO49if491qmx7ZA
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMWY3NDdkZi0wNWU1LTRkNGItODkxYi05M2QzZWU0NmI3Y2IiLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJSZXRyMG1hbiIsImlhdCI6MTc4NTcxODc0MiwiZXhwIjoxNzg1NzE5NjQyfQ.jaFFdslTZCZIHcQAxg-zOckrLuKEuDTbO7nLej4Qd94
 
 ### Health check
 GET {{baseUrl}}
+
+# ========================== AUTH ==========================
+### REGISTRO
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+    "username": "Retr0man",
+    "email": "mail@gmail.com",
+    "password": "123123123"
+}
+
+### login
+POST  {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "mail@gmail.com",
+    "password": "123123123"
+}
+
 
 # ========================== SPOT ==========================
 ### Criar spot
@@ -26,6 +47,7 @@ GET {{baseUrl}}/spots?lat=4.2766985&lon=73.51321006&radius=5000
 ### Atualizar spot
 PUT {{baseUrl}}/spots/{{spotId}}
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
     "alias": "Pico da neblina"
@@ -51,7 +73,7 @@ Content-Type: application/json
 PUT {{presigned.response.body.uploadUrl}}
 Content-Type: image/jpg
 
-< ./test.jpg
+< ./reggie.webp
 
 ### Confirmar upload
 POST {{baseUrl}}/spots/{{spotId}}/images/{{presigned.response.body.imageId}}/confirm
@@ -59,26 +81,6 @@ POST {{baseUrl}}/spots/{{spotId}}/images/{{presigned.response.body.imageId}}/con
 ### Listar imagens do spot
 GET {{baseUrl}}/spots/{{spotId}}/images
 
-
-# ========================== AUTH ==========================
-### REGISTRO
-POST {{baseUrl}}/auth/register
-Content-Type: application/json
-
-{
-    "username": "Retr0man",
-    "email": "mail@gmail.com",
-    "password": "123123123"
-}
-
-### login
-POST  {{baseUrl}}/auth/login
-Content-Type: application/json
-
-{
-    "email": "mail@gmail.com",
-    "password": "123123123"
-}
 
 # ========================== USUARIOS ==========================
 ### PEGA A INFORMACAO DOS USUARIOS
