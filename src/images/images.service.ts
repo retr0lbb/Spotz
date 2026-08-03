@@ -1,13 +1,12 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { S3Service } from '../s3/s3.service';
 import { DRIZZLE, type DrizzleDB } from '../drizzle/drizzle.module';
-import {
-  ImageMetadataDTO,
-  imageMetadataSchema,
-} from './dto/image-metadata.dto';
-import { imagesMetadata, spotsImages, spotsTable } from '../drizzle/schemas';
+import { ImageMetadataDTO } from './dto/image-metadata.dto';
+import { imagesMetadata, spotsImages, spotsTable, usersTable } from '../drizzle/schemas';
 import { eq } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
+import { AjaxError } from 'rxjs/ajax';
+import { isWithinDistance } from '../drizzle/schemas/spots-images.schema';
 
 const BUCKET = 'spots';
 
@@ -18,13 +17,19 @@ export class ImagesService {
     @Inject(DRIZZLE) private readonly db: DrizzleDB,
   ) {}
 
-  async generateUploadUrl(spotId: string, metadata: ImageMetadataDTO) {
-    const spot = await this.db
+  async generateUploadUrl(spotId: string, userId: string, metadata: ImageMetadataDTO) {
+    const [user] = await this.db.select().from(usersTable).where(eq(usersTable.id, userId))
+
+    if(!user){
+      throw new NotFoundException("User not found")
+    }
+
+    const [spot] = await this.db
       .select()
       .from(spotsTable)
       .where(eq(spotsTable.id, spotId));
 
-    if (!spot || spot.length > 1 || spot.length <= 0) {
+    if (!spot) {
       throw new NotFoundException('Spot Not found for upload');
     }
 
@@ -34,18 +39,36 @@ export class ImagesService {
 
     const s3Key = `spots/${spotId}/${imageId}.${ext}`;
 
-    await this.db.insert(imagesMetadata).values({
-      id: imageId,
-      s3Key,
-      mimeType: metadata.mimeType,
-      sizeBytes: metadata.sizeBytes,
-      status: 'pending',
-    });
+    const isOwner = spot.userId === userId;
 
-    await this.db.insert(spotsImages).values({
-      imageId,
-      spotId,
-    }); //mete um promise.all aqui mermao
+    if(!isOwner){
+      if(!metadata.latitude || !metadata.longitude){
+        throw new BadRequestException("User location is necessary for this spot. as it is not the spot owner")
+      }
+      
+      const withinRange = await isWithinDistance(spotId, metadata.latitude, metadata.longitude, 100, this.db)
+
+      if(!withinRange ){
+        throw new BadRequestException("User must be at least 100 meters from the spot to post a photo")
+      }
+    }
+
+
+    await Promise.all([
+      this.db.insert(imagesMetadata).values({
+        id: imageId,
+        s3Key,
+        mimeType: metadata.mimeType,
+        sizeBytes: metadata.sizeBytes,
+        status: 'pending',
+      }),
+
+      this.db.insert(spotsImages).values({
+        imageId,
+        uploadedBy: userId,
+        spotId,
+      })
+    ])
 
     const uploadUrl = await this.s3service.getPresignedUploadUrl(
       BUCKET,

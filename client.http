@@ -1,7 +1,7 @@
 @baseUrl = http://localhost:3000
-@spotId = e327b08a-aff9-4086-a38a-1b333c73a2b7
+@spotId = c8be438f-69c1-4ca8-a902-973a219b588c
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMWY3NDdkZi0wNWU1LTRkNGItODkxYi05M2QzZWU0NmI3Y2IiLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJSZXRyMG1hbiIsImlhdCI6MTc4NTcxODc0MiwiZXhwIjoxNzg1NzE5NjQyfQ.jaFFdslTZCZIHcQAxg-zOckrLuKEuDTbO7nLej4Qd94
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiM2Q5ZjZhMC1lZDVjLTQxMzYtOTc4Mi1mOTgwYjU3NDJhYTciLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJtYWRhIiwiaWF0IjoxNzg1NzIxNjY3LCJleHAiOjE3ODU3MjI1Njd9.S40WEulSdjL2EiJo9vkjM0IZhI4T2ukhUaMxTx5snBQ
 
 ### Health check
 GET {{baseUrl}}
@@ -12,8 +12,8 @@ POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
 {
-    "username": "Retr0man",
-    "email": "mail@gmail.com",
+    "username": "mada",
+    "email": "mada@mail.com",
     "password": "123123123"
 }
 
@@ -62,11 +62,14 @@ DELETE {{baseUrl}}/spots/{{spotId}}
 # @name presigned
 POST {{baseUrl}}/spots/{{spotId}}/images/presigned
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
     "mimeType": "image/jpg",
     "sizeBytes": 15728640,
-    "originalName": "test.jpg"
+    "originalName": "reggie.webp",
+    "latitude": 4.2726784,
+    "longitude": 73.5132004
 }
 
 ### Upload da imagem (cole a uploadUrl retornada acima)

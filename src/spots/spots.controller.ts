@@ -61,13 +61,4 @@ export class SpotsController {
 
     return 'ok';
   }
-
-  @UseGuards(JwtGuard)
-  @Post(":id/add-post")
-  async addForeignPost(
-    @CurrentUser() user: JWTClaims,
-    @Param() params: AddForeignImageParamsDTO,
-  ){
-    
-  }
 }
