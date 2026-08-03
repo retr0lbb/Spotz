@@ -99,4 +99,6 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 
 ## Features
-- [ ] permitir que o usuário poste fotos no spot des de que esteja a menos de 100 metros de distancia no futuro trocar para que seja visitado nas ultimas 24 horas.
+- [x] permitir que o usuário poste fotos no spot des de que esteja a menos de 100 metros de distancia no futuro trocar para que seja visitado nas ultimas 24 horas.
+- [ ] mostrar o id de quem enviou a foto na resposta do corpo e mostrar o status da foto se foi confirmada ou nao no corpo
+- [ ] modificar a funcao de pegar fotos do spot para poder adicionar filtro de userid enviado para o spot
