@@ -18,11 +18,12 @@ Content-Type: application/json
 }
 
 ### login
+# @name login
 POST  {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "mail@gmail.com",
+    "email": "mada@mail.com",
     "password": "123123123"
 }
 
@@ -31,7 +32,7 @@ Content-Type: application/json
 ### Criar spot
 POST {{baseUrl}}/spots
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.accessToken}}
 
 {
     "lat": "4.2726784",
@@ -47,7 +48,7 @@ GET {{baseUrl}}/spots?lat=4.2766985&lon=73.51321006&radius=5000
 ### Atualizar spot
 PUT {{baseUrl}}/spots/{{spotId}}
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.accessToken}}
 
 {
     "alias": "Pico da neblina"

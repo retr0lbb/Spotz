@@ -5,7 +5,6 @@ import { ImageMetadataDTO } from './dto/image-metadata.dto';
 import { imagesMetadata, spotsImages, spotsTable, usersTable } from '../drizzle/schemas';
 import { eq } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
-import { AjaxError } from 'rxjs/ajax';
 import { isWithinDistance } from '../drizzle/schemas/spots-images.schema';
 
 const BUCKET = 'spots';
@@ -104,20 +103,29 @@ export class ImagesService {
     }
 
     const images = await this.db
-      .select()
+      .select({
+        imageId: spotsImages.id,
+        uploadedBy: spotsImages.uploadedBy,
+        key: imagesMetadata.s3Key,
+        status: imagesMetadata.status,
+        mimeType: imagesMetadata.mimeType,
+        uploadedAt: imagesMetadata.createdAt
+      })
       .from(spotsImages)
       .innerJoin(imagesMetadata, eq(spotsImages.imageId, imagesMetadata.id))
       .where(eq(spotsImages.spotId, spotId));
 
     return Promise.all(
-      images.map(async ({ images_metadata }) => ({
-        id: images_metadata.id,
+      images.map(async ({ imageId, key, uploadedBy, mimeType, status, uploadedAt }) => ({
+        id: imageId,
         url: await this.s3service.getPresignedUrl(
           BUCKET,
-          images_metadata.s3Key,
+          key
         ),
-        mimeType: images_metadata.mimeType,
-        createdAt: images_metadata.createdAt,
+        mimeType: mimeType,
+        uploadedAt: uploadedAt,
+        uploadedBy: uploadedBy,
+        status: status
       })),
     );
   }
