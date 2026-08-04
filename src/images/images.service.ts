@@ -3,9 +3,10 @@ import { S3Service } from '../s3/s3.service';
 import { DRIZZLE, type DrizzleDB } from '../drizzle/drizzle.module';
 import { ImageMetadataDTO } from './dto/image-metadata.dto';
 import { imagesMetadata, spotsImages, spotsTable, usersTable } from '../drizzle/schemas';
-import { eq } from 'drizzle-orm';
+import { and, desc, eq, lt, or } from 'drizzle-orm';
 import { randomUUID } from 'crypto';
-import { isWithinDistance } from '../drizzle/schemas/spots-images.schema';
+import { decodeCursor, encodeCursor, isWithinDistance } from '../drizzle/schemas/spots-images.schema';
+import { GetSpotImagesQueryDTO } from './dto/get-spot-images.dto';
 
 const BUCKET = 'spots';
 
@@ -92,7 +93,7 @@ export class ImagesService {
       .where(eq(imagesMetadata.id, imageId));
   }
 
-  async getSpotImages(spotId: string) {
+  async getSpotImages(spotId: string, query: GetSpotImagesQueryDTO) {
     const [spot] = await this.db
       .select()
       .from(spotsTable)
@@ -101,6 +102,8 @@ export class ImagesService {
     if (!spot) {
       throw new NotFoundException('Spot not found');
     }
+
+    const decodedCursor = query.cursor ? decodeCursor(query.cursor) : undefined
 
     const images = await this.db
       .select({
@@ -113,9 +116,18 @@ export class ImagesService {
       })
       .from(spotsImages)
       .innerJoin(imagesMetadata, eq(spotsImages.imageId, imagesMetadata.id))
-      .where(eq(spotsImages.spotId, spotId));
+      .where(and(eq(spotsImages.spotId, spotId), decodedCursor? or(
+        lt(spotsImages.createdAt, decodedCursor.createdAt),
+        and(eq(spotsImages.createdAt, decodedCursor.createdAt), lt(spotsImages.id, decodedCursor.id))
+      ): undefined)).orderBy(desc(spotsImages.createdAt), desc(spotsImages.id)).limit(query.limit + 1)
 
-    return Promise.all(
+      const hasNextPage = images.length > query.limit;
+      const items = hasNextPage ? images.slice(0, query.limit): images
+      const lastImage = items[items.length - 1]
+      const nextCursor = hasNextPage? encodeCursor({createdAt: lastImage.uploadedAt, id: lastImage.imageId}): null
+
+
+    const resultImages = await Promise.all(
       images.map(async ({ imageId, key, uploadedBy, mimeType, status, uploadedAt }) => ({
         id: imageId,
         url: await this.s3service.getPresignedUrl(
@@ -128,5 +140,7 @@ export class ImagesService {
         status: status
       })),
     );
+
+    return {images: resultImages, nextCursor}
   }
 }

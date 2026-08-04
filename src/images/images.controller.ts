@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
 import { ImagesService } from './images.service';
 import {
   type ImageMetadataDTO,
@@ -7,7 +7,7 @@ import {
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import type { JWTClaims } from '../common/services/token-service';
-import type { AddForeignImageParamsDTO } from '../spots/dto/add-foreing-image.dto';
+import type { GetSpotImagesQueryDTO } from './dto/get-spot-images.dto';
 
 @Controller('spots/:spotId/images')
 export class ImagesController {
@@ -37,7 +37,8 @@ export class ImagesController {
   }
 
   @Get()
-  async getSpotImages(@Param('spotId') spotId: string) {
-    return await this.imageService.getSpotImages(spotId);
+  async getSpotImages(@Param('spotId') spotId: string, @Query() query: GetSpotImagesQueryDTO) {
+    console.log(query)
+    return await this.imageService.getSpotImages(spotId, query);
   }
 }

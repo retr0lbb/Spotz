@@ -1,8 +1,6 @@
 @baseUrl = http://localhost:3000
 @spotId = c8be438f-69c1-4ca8-a902-973a219b588c
 
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiM2Q5ZjZhMC1lZDVjLTQxMzYtOTc4Mi1mOTgwYjU3NDJhYTciLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJtYWRhIiwiaWF0IjoxNzg1NzIxNjY3LCJleHAiOjE3ODU3MjI1Njd9.S40WEulSdjL2EiJo9vkjM0IZhI4T2ukhUaMxTx5snBQ
-
 ### Health check
 GET {{baseUrl}}
 
@@ -63,7 +61,7 @@ DELETE {{baseUrl}}/spots/{{spotId}}
 # @name presigned
 POST {{baseUrl}}/spots/{{spotId}}/images/presigned
 Content-Type: application/json
-Authorization: Bearer {{token}}
+Authorization: Bearer {{login.response.body.accessToken}}
 
 {
     "mimeType": "image/jpg",

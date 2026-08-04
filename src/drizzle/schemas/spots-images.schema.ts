@@ -17,7 +17,7 @@ export const spotsImages = pgTable('spots_images', {
   createdAt: timestamp('created_at').notNull().defaultNow(),
   uploadedBy: uuid("uploaded_by").references(() => usersTable.id, {onDelete: "set null"})
 }, (table) => [
-  index("spots_images_spot_id_idx").on(table.spotId)
+  index('spots_images_spot_id_created_at_id_idx').on(table.spotId, table.createdAt.desc(), table.id.desc())
 ]);
 
 
@@ -33,4 +33,14 @@ export async function isWithinDistance(spotId: string, lat: number, lng: number,
   `);
 
   return result.rows[0]?.within_range ?? false;
+}
+
+
+export function encodeCursor(data: { createdAt: Date; id: string }): string {
+  return Buffer.from(JSON.stringify({ createdAt: data.createdAt.toISOString(), id: data.id })).toString('base64url');
+}
+
+export function decodeCursor(cursor: string): { createdAt: Date; id: string } {
+  const decoded = JSON.parse(Buffer.from(cursor, 'base64url').toString());
+  return { createdAt: new Date(decoded.createdAt), id: decoded.id };
 }
