@@ -1,0 +1,2 @@
+DROP INDEX "spots_images_spot_id_idx";--> statement-breakpoint
+CREATE INDEX "spots_images_spot_id_created_at_id_idx" ON "spots_images" USING btree ("spot_id","created_at" DESC NULLS LAST,"id" DESC NULLS LAST);

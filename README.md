@@ -104,5 +104,4 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 - [x] modificar a funcao de pegar fotos do spot para poder adicionar filtro de userid enviado para o spot.
 - [x] adicionar cursor based pagination no spots images
 
-- [ ] adicionar funcao de excluir spot e excluir as imagens junto.(carry)
-- [ ] concertar os envs. (carry)
+- [x] adicionar funcao de excluir spot e excluir as imagens junto
