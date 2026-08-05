@@ -1,6 +1,8 @@
 @baseUrl = http://localhost:3000
 @spotId = c8be438f-69c1-4ca8-a902-973a219b588c
 
+@imageId = 46d3320f-bc4a-49c8-8270-be608a316abb
+
 ### Health check
 GET {{baseUrl}}
 
@@ -83,8 +85,11 @@ POST {{baseUrl}}/spots/{{spotId}}/images/{{presigned.response.body.imageId}}/con
 ### Listar imagens do spot
 GET {{baseUrl}}/spots/{{spotId}}/images
 
+### DELETE AN IMAGE FROM A SPOT
+DELETE  {{baseUrl}}/spots/{{spotId}}/images/{{imageId}}
+Authorization: Bearer {{login.response.body.accessToken}}
 
 # ========================== USUARIOS ==========================
 ### PEGA A INFORMACAO DOS USUARIOS
 GET {{baseUrl}}/users/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMWY3NDdkZi0wNWU1LTRkNGItODkxYi05M2QzZWU0NmI3Y2IiLCJ0eXBlIjoiYWNjZXNzIiwidXNlcm5hbWUiOiJSZXRyMG1hbiIsImlhdCI6MTc4MjQ0MzYxOCwiZXhwIjoxNzgyNDQ0NTE4fQ.TgbL57i6lmHH2tvI9qz9b7ThY8I79XdMHe21zPfrMHY
+Authorization: Bearer {{login.response.body.accessToken}}

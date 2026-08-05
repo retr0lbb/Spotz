@@ -53,10 +53,15 @@ export class ImagesController {
     return await this.imageService.getSpotImages(spotId, query);
   }
 
+  @UseGuards(JwtGuard)
   @Delete(':imageId')
   async deleteSpotImage(
     @Param('spotId') spotId: string,
     @Param('imageId') imageId: string,
     @CurrentUser() user: JWTClaims,
-  ) {}
+  ) {
+    await this.imageService.deleteSpotImage(spotId, imageId, user.sub)
+
+    return;
+  }
 }
