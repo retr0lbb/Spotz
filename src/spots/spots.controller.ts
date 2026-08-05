@@ -22,17 +22,19 @@ import type { AddForeignImageParamsDTO } from './dto/add-foreing-image.dto';
 @Controller('spots')
 export class SpotsController {
   constructor(private readonly spotsService: SpotsService) {}
-  
+
   @UseGuards(JwtGuard)
   @Post()
-  async createSpot(@CurrentUser() user: JWTClaims, @Body() body: CreateSpotDTO) {
-
-    if(!user){
-      throw new Error("Yeah user doesnot passed")
+  async createSpot(
+    @CurrentUser() user: JWTClaims,
+    @Body() body: CreateSpotDTO,
+  ) {
+    if (!user) {
+      throw new Error('Yeah user doesnot passed');
     }
     const data = createSpotSchema.parse(body);
 
-    await this.spotsService.createSpot(user.sub, data );
+    await this.spotsService.createSpot(user.sub, data);
   }
 
   @Get()
@@ -49,14 +51,21 @@ export class SpotsController {
     @Param() params: UpdateSpotParamsDTO,
     @Body() body: UpdateSpotDTO,
   ) {
-    const result = await this.spotsService.updateSpot(params.id, user.sub, body);
+    const result = await this.spotsService.updateSpot(
+      params.id,
+      user.sub,
+      body,
+    );
 
     return result;
   }
 
   @UseGuards(JwtGuard)
   @Delete('/:id')
-  async deleteSpot(@CurrentUser() user: JWTClaims, @Param() param: { id: string }) {
+  async deleteSpot(
+    @CurrentUser() user: JWTClaims,
+    @Param() param: { id: string },
+  ) {
     await this.spotsService.deleteSpot(user.sub, param.id);
 
     return 'ok';

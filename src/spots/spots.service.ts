@@ -1,4 +1,9 @@
-import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { DRIZZLE, type DrizzleDB } from '../drizzle/drizzle.module';
 import { CreateSpotDTO } from './dto/create-spot.dto';
 import { UpdateSpotDTO } from './dto/update-spot.dto';
@@ -17,10 +22,13 @@ export class SpotsService {
   ) {}
 
   async createSpot(userId: string, payload: CreateSpotDTO) {
-    const user = await this.db.select().from(usersTable).where(eq(usersTable.id, userId))
-    
-    if(!user){
-      throw new NotFoundException("user not found")
+    const user = await this.db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, userId));
+
+    if (!user) {
+      throw new NotFoundException('user not found');
     }
 
     const spot = await this.db
@@ -62,20 +70,21 @@ export class SpotsService {
       values.location = `POINT(${payload.lon} ${payload.lat})`;
     }
 
-    const [user] = await this.db.select()
-    .from(usersTable)
-    .where(eq(usersTable.id, userId))
+    const [user] = await this.db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, userId));
 
     const [spot] = await this.db
       .select()
       .from(spotsTable)
       .where(eq(spotsTable.id, id));
 
-    if (!spot){
-      throw new NotFoundException("Spot not found")
+    if (!spot) {
+      throw new NotFoundException('Spot not found');
     }
-    if (!user || (spot.userId !== user.id)){
-      throw new NotFoundException("User acc with the spot not found")
+    if (!user || spot.userId !== user.id) {
+      throw new NotFoundException('User acc with the spot not found');
     }
 
     const [updatedSpot] = await this.db
@@ -92,9 +101,9 @@ export class SpotsService {
       .select()
       .from(spotsTable)
       .where(eq(spotsTable.id, id));
-    
-    if(spot.userId !== userId){
-      throw new ForbiddenException("Cannot delete a project that is not yours")
+
+    if (spot.userId !== userId) {
+      throw new ForbiddenException('Cannot delete a project that is not yours');
     }
 
     if (!spot) {

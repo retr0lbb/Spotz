@@ -6,7 +6,7 @@ export const imageMetadataSchema = z.object({
   sizeBytes: z.number().max(maxBytes).nonoptional(),
   originalName: z.string(),
   latitude: z.number().optional(),
-  longitude: z.number().optional()
+  longitude: z.number().optional(),
 });
 
 export type ImageMetadataDTO = z.infer<typeof imageMetadataSchema>;

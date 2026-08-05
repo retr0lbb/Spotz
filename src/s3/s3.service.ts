@@ -43,7 +43,7 @@ export class S3Service {
     );
   }
 
-  async deleteBucket(bucket: string, key: string) {
+  async deleteObject(bucket: string, key: string) {
     await this.s3.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
   }
 

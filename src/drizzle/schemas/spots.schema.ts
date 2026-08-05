@@ -19,8 +19,8 @@ export const spotsTable = pgTable(
   {
     id: uuid().primaryKey().defaultRandom(),
     userId: uuid('user_id')
-    .notNull()
-    .references(() => usersTable.id, { onDelete: 'set null' }),
+      .notNull()
+      .references(() => usersTable.id, { onDelete: 'set null' }),
     alias: varchar().notNull(),
     description: varchar(),
 

@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ImagesService } from './images.service';
 import {
   type ImageMetadataDTO,
@@ -37,8 +46,17 @@ export class ImagesController {
   }
 
   @Get()
-  async getSpotImages(@Param('spotId') spotId: string, @Query() query: GetSpotImagesQueryDTO) {
-    console.log(query)
+  async getSpotImages(
+    @Param('spotId') spotId: string,
+    @Query() query: GetSpotImagesQueryDTO,
+  ) {
     return await this.imageService.getSpotImages(spotId, query);
   }
+
+  @Delete(':imageId')
+  async deleteSpotImage(
+    @Param('spotId') spotId: string,
+    @Param('imageId') imageId: string,
+    @CurrentUser() user: JWTClaims,
+  ) {}
 }
