@@ -103,5 +103,11 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 - [x] mostrar o id de quem enviou a foto na resposta do corpo e mostrar o status da foto se foi confirmada ou nao no corpo.
 - [x] modificar a funcao de pegar fotos do spot para poder adicionar filtro de userid enviado para o spot.
 - [x] adicionar cursor based pagination no spots images
-
 - [x] adicionar funcao de excluir spot e excluir as imagens junto
+
+- [ ] concertar a busca por ownerId na imagem
+- [ ] criar historico de spots visitados por perfil (destruct)
+- [ ] criar historico de informacoes geograficas para spot
+- [ ] tags para spots? (DESTRUCT)
+- [ ] visibilidade de spot (DESTRUCT)
+- [ ] selos tipo cartao passaporte para pessoas que visitaram cada um deles (DESTRUCT)

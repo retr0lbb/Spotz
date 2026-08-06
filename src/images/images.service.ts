@@ -202,6 +202,7 @@ export class ImagesService {
                 ),
               )
             : undefined,
+          query.ownerId ? eq(spotsImages.uploadedBy, query.ownerId): undefined
         ),
       )
       .orderBy(desc(spotsImages.createdAt), desc(spotsImages.id))
