@@ -22,6 +22,7 @@ import {
   isWithinDistance,
 } from '../drizzle/schemas/spots-images.schema';
 import { GetSpotImagesQueryDTO } from './dto/get-spot-images.dto';
+import { meta } from 'zod/v4/core';
 
 const BUCKET = 'spots';
 
@@ -229,5 +230,41 @@ export class ImagesService {
     );
 
     return { images: resultImages, nextCursor };
+  }
+
+  async createProfilePictureMetadata(userId: string, metadata: ImageMetadataDTO){
+
+    const [user] = await this.db.select().from(usersTable).where(eq(usersTable.id, userId))
+
+    if(!user){
+      throw new NotFoundException("User not found")
+    }
+
+    if(user.pictureId !== null){
+      throw new BadRequestException("Cannot change profile picture") // add to be able to change profile picture by excluding it in the bucket
+    }
+
+    
+    const ext = metadata.originalName.split('.').pop();
+
+    const imageId = randomUUID();
+
+    const s3Key = `profile/${userId}/${imageId}.${ext}`;
+
+    await this.db.insert(imagesMetadata).values({
+      s3Key: s3Key,
+      mimeType: metadata.mimeType,
+      sizeBytes: metadata.sizeBytes,
+    })
+
+    
+    const uploadUrl = await this.s3service.getPresignedUploadUrl(
+      BUCKET,
+      s3Key,
+      metadata.mimeType,
+    );
+
+    return uploadUrl
+
   }
 }

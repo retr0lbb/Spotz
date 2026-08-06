@@ -91,5 +91,23 @@ Authorization: Bearer {{login.response.body.accessToken}}
 
 # ========================== USUARIOS ==========================
 ### PEGA A INFORMACAO DOS USUARIOS
-GET {{baseUrl}}/users/me
+GET {{baseUrl}}/users
 Authorization: Bearer {{login.response.body.accessToken}}
+
+###
+# @name picture
+POST {{baseUrl}}/users/picture
+Authorization: Bearer {{login.response.body.accessToken}}
+Content-Type: application/json
+
+{
+  "mimeType": "image/webp",
+  "sizeBytes": 21024,
+  "originalName": "reggie.webp"
+}
+
+### Upload da imagem
+PUT http://localhost:9000/spots/profile/b3d9f6a0-ed5c-4136-9782-f980b5742aa7/70ecee44-eae2-4c3c-ba3b-96586f14759a.webp?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=minioadmin%2F20260806%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20260806T214614Z&X-Amz-Expires=300&X-Amz-Signature=c8e0ef3d54c1e820c588e77350ec8a1a1da290f9ebb9a222dfee8f101abb2b12&X-Amz-SignedHeaders=host&x-amz-checksum-crc32=AAAAAA%3D%3D&x-amz-sdk-checksum-algorithm=CRC32&x-id=PutObject
+Content-Type: image/webp
+
+< ./reggie.webp

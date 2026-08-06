@@ -43,6 +43,13 @@
       "when": 1785904282411,
       "tag": "0005_cultured_madelyne_pryor",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1786051184184,
+      "tag": "0006_flashy_night_thrasher",
+      "breakpoints": true
     }
   ]
 }

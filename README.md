@@ -104,8 +104,14 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 - [x] modificar a funcao de pegar fotos do spot para poder adicionar filtro de userid enviado para o spot.
 - [x] adicionar cursor based pagination no spots images
 - [x] adicionar funcao de excluir spot e excluir as imagens junto
+- [x] concertar a busca por ownerId na imagem
+- [ ] criar crud basico de usuario com foto de perfil
+- [ ] adicionar o confirm upload na imagem do usuario
 
-- [ ] concertar a busca por ownerId na imagem
+- [ ] concertar acumulo de responsabilidades em image service extrapolar para gera presigned, upload get e delete e etc
+
+- [ ] criar review de spot (144 caracteres tipo twitter e uma pontuação simples de like e dislike. por spot não por foto)
+
 - [ ] criar historico de spots visitados por perfil (destruct)
 - [ ] criar historico de informacoes geograficas para spot
 - [ ] tags para spots? (DESTRUCT)
