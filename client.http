@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3000
-@spotId = c8be438f-69c1-4ca8-a902-973a219b588c
+@spotId = adfc9061-2ea2-4616-b577-8b0a5deaa0db
 
 @imageId = 46d3320f-bc4a-49c8-8270-be608a316abb
 
@@ -12,8 +12,8 @@ POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
 {
-    "username": "",
-    "email": "mada@mada.com",
+    "username": "retr0lbb",
+    "email": "retr0lbb@mail.com",
     "password": "123123"
 }
 
@@ -23,8 +23,8 @@ POST  {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-    "email": "mada@mail.com",
-    "password": "123123123"
+    "email": "retr0lbb@mail.com",
+    "password": "123123"
 }
 
 
@@ -61,7 +61,7 @@ DELETE {{baseUrl}}/spots/{{spotId}}
 # ========================== IMAGENS DO SPOT ==========================
 ### Gerar presigned URL para upload
 # @name presigned
-POST {{baseUrl}}/spots/{{spotId}}/images/presigned
+POST {{baseUrl}}/spots/{{spotId}}/image
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.accessToken}}
 
@@ -80,7 +80,7 @@ Content-Type: image/jpg
 < ./reggie.webp
 
 ### Confirmar upload
-POST {{baseUrl}}/spots/{{spotId}}/images/{{presigned.response.body.imageId}}/confirm
+POST {{baseUrl}}/spots/{{spotId}}/image/{{presigned.response.body.imageId}}/confirm
 
 ### Listar imagens do spot
 GET {{baseUrl}}/spots/{{spotId}}/images

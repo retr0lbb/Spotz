@@ -22,7 +22,6 @@ import {
   isWithinDistance,
 } from '../drizzle/schemas/spots-images.schema';
 import { GetSpotImagesQueryDTO } from './dto/get-spot-images.dto';
-import { meta } from 'zod/v4/core';
 
 const BUCKET = 'spots';
 
