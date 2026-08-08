@@ -12,9 +12,9 @@ POST {{baseUrl}}/auth/register
 Content-Type: application/json
 
 {
-    "username": "mada",
-    "email": "mada@mail.com",
-    "password": "123123123"
+    "username": "",
+    "email": "mada@mada.com",
+    "password": "123123"
 }
 
 ### login

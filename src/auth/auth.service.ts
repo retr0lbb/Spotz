@@ -6,8 +6,8 @@ import {
 } from '@nestjs/common';
 import { DRIZZLE, type DrizzleDB } from '../drizzle/drizzle.module';
 import { usersTable } from '../drizzle/schemas';
-import { TokenService } from '../common/services/token-service';
-import { EncryptService } from '../common/services/encrypt-service';
+import { TokenService } from '../shared/services/token-service';
+import { EncryptService } from '../shared/services/encrypt-service';
 import { type RegisterDTO } from './dto/register.dto';
 import { type LoginDTO } from './dto/login.dto';
 import { eq } from 'drizzle-orm';

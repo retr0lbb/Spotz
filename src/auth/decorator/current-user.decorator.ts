@@ -1,6 +1,6 @@
 // auth/decorators/current-user.decorator.ts
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { JWTClaims } from '../../common/services/token-service';
+import { JWTClaims } from '../../shared/services/token-service';
 
 export const CurrentUser = createParamDecorator(
   (_: unknown, ctx: ExecutionContext): JWTClaims => {

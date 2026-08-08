@@ -16,7 +16,7 @@ import type { GetAllSpotsQuery } from './dto/getAllSpots.dto';
 import type { UpdateSpotDTO, UpdateSpotParamsDTO } from './dto/update-spot.dto';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
-import type { JWTClaims } from '../common/services/token-service';
+import type { JWTClaims } from '../shared/services/token-service';
 import type { AddForeignImageParamsDTO } from './dto/add-foreing-image.dto';
 
 @Controller('spots')

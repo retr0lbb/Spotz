@@ -15,7 +15,7 @@ import {
 } from './dto/image-metadata.dto';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
-import type { JWTClaims } from '../common/services/token-service';
+import type { JWTClaims } from '../shared/services/token-service';
 import type { GetSpotImagesQueryDTO } from './dto/get-spot-images.dto';
 
 @Controller('spots/:spotId/images')

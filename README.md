@@ -105,6 +105,9 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 - [x] adicionar cursor based pagination no spots images
 - [x] adicionar funcao de excluir spot e excluir as imagens junto
 - [x] concertar a busca por ownerId na imagem
+- [x] fazer upload da imagem de perfil
+- [ ] linkar o usuario com a foto de perfil
+
 - [ ] criar crud basico de usuario com foto de perfil
 - [ ] adicionar o confirm upload na imagem do usuario
 

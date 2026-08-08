@@ -1,8 +1,7 @@
 import { Body, Controller, Delete, Get, Post, Req, UseGuards } from '@nestjs/common';
-import { type Request } from 'express';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
-import type { JWTClaims } from '../common/services/token-service';
+import type { JWTClaims } from '../shared/services/token-service';
 import { UsersService } from './users.service';
 import { ImagesService } from '../images/images.service';
 import type { ImageMetadataDTO } from '../images/dto/image-metadata.dto';
