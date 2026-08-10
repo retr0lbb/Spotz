@@ -107,9 +107,10 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 - [x] concertar a busca por ownerId na imagem
 - [x] fazer upload da imagem de perfil
 - [x] concertar acumulo de responsabilidades em image service extrapolar para gera presigned, upload get e delete e etc
+- [x] concertar o sizebytes que nao esta sendo passado no image metadata
 
-- [ ] concertar o sizebytes que nao esta sendo passado no image metadata
 - [ ] linkar o usuario com a foto de perfil
+
 - [ ] criar crud basico de usuario com foto de perfil
 - [ ] adicionar o confirm upload na imagem do usuario
 - [ ] criar review de spot (144 caracteres tipo twitter e uma pontuação simples de like e dislike. por spot não por foto)

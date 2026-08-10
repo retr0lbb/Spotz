@@ -18,7 +18,10 @@ import { JwtGuard } from '../auth/guards/jwt.guard';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
 import type { JWTClaims } from '../shared/services/token-service';
 import { ZodValidationPipe } from '../shared/pipes/zod.pipe';
-import { type UploadSpotImageDTO, uploadSpotImageDTOSchema } from './dto/upload-image.dto';
+import {
+  type UploadSpotImageDTO,
+  uploadSpotImageDTOSchema,
+} from './dto/upload-image.dto';
 
 @Controller('spots')
 export class SpotsController {
@@ -73,17 +76,24 @@ export class SpotsController {
   }
 
   @UseGuards(JwtGuard)
-  @Post("/:id/image")
-  async getUploadUrl(@Param() param: {id: string}, @CurrentUser() user: JWTClaims, @Body(new ZodValidationPipe(uploadSpotImageDTOSchema)) body: UploadSpotImageDTO){
-    const data = await this.spotsService.uploadSpotImage(param.id, user.sub, body)
+  @Post('/:id/image')
+  async getUploadUrl(
+    @Param() param: { id: string },
+    @CurrentUser() user: JWTClaims,
+    @Body(new ZodValidationPipe(uploadSpotImageDTOSchema))
+    body: UploadSpotImageDTO,
+  ) {
+    const data = await this.spotsService.uploadSpotImage(
+      param.id,
+      user.sub,
+      body,
+    );
 
-    return {uploadUrl: data.url, imageId: data.imageId}
+    return { uploadUrl: data.url, imageId: data.imageId };
   }
 
-  
   @Post('/:id/image/:imageId/confirm')
   async confirmUpload(@Param('imageId') imageId: string) {
     return await this.spotsService.confirmUpload(imageId);
   }
-
 }

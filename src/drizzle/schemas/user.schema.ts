@@ -6,5 +6,5 @@ export const usersTable = pgTable('users', {
   username: text().notNull(),
   email: text().unique().notNull(),
   passwordHash: text('password_hash'),
-  pictureId: uuid().references(() => imagesMetadata.id)
+  pictureId: uuid().references(() => imagesMetadata.id),
 });

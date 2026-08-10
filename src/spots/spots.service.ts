@@ -12,19 +12,19 @@ import { spotsTable, usersTable } from '../drizzle/schemas';
 import { GetAllSpotsQuery } from './dto/getAllSpots.dto';
 import { sql, eq } from 'drizzle-orm';
 import { S3Service } from '../s3/s3.service';
-import { ImageMetadataDTO } from '../images/dto/image-metadata.dto';
-import { randomUUID } from 'crypto';
-import { isWithinDistance, spotsImages } from '../drizzle/schemas/spots-images.schema';
+import {
+  isWithinDistance,
+  spotsImages,
+} from '../drizzle/schemas/spots-images.schema';
 import { ImageService } from '../shared/services/image.service';
-
-const BUCKET = 'spots';
+import type { ImageMetadataDTO } from './dto/image-spot.dto';
 
 @Injectable()
 export class SpotsService {
   constructor(
     @Inject(DRIZZLE) private readonly db: DrizzleDB,
     private readonly s3service: S3Service,
-    private readonly imageService: ImageService
+    private readonly imageService: ImageService,
   ) {}
 
   async createSpot(userId: string, payload: CreateSpotDTO) {
@@ -117,76 +117,77 @@ export class SpotsService {
     }
 
     await this.db.transaction(async (tx) => {
-      await this.s3service.deleteFolder(BUCKET, `spots/${spot.id}/`);
+      await this.s3service.deleteFolder(`spots/${spot.id}/`);
 
       await tx.delete(spotsTable).where(eq(spotsTable.id, spot.id));
     });
   }
 
-  async uploadSpotImage( 
-      spotId: string,
-      userId: string,
-      metadata: ImageMetadataDTO
-    ){
-      const [user] = await this.db
-        .select()
-        .from(usersTable)
-        .where(eq(usersTable.id, userId));
+  async uploadSpotImage(
+    spotId: string,
+    userId: string,
+    metadata: ImageMetadataDTO,
+  ) {
+    const [user] = await this.db
+      .select()
+      .from(usersTable)
+      .where(eq(usersTable.id, userId));
 
-      if (!user) {
-        throw new NotFoundException('User not found');
-      }
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
 
-      const [spot] = await this.db
-        .select()
-        .from(spotsTable)
-        .where(eq(spotsTable.id, spotId));
+    const [spot] = await this.db
+      .select()
+      .from(spotsTable)
+      .where(eq(spotsTable.id, spotId));
 
-      if (!spot) {
-        throw new NotFoundException('Spot Not found for upload');
-      }
+    if (!spot) {
+      throw new NotFoundException('Spot Not found for upload');
+    }
 
-      const ext = metadata.originalName.split('.').pop();
+    const isOwner = spot.userId === userId;
 
-      const imageId = randomUUID();
-      const s3Key = `spots/${spotId}/${imageId}.${ext}`;
-      const isOwner = spot.userId === userId;
-      
-      if (!isOwner) {
-        if (!metadata.latitude || !metadata.longitude) {
-          throw new BadRequestException(
-            'User location is necessary for this spot. as it is not the spot owner',
-          );
-        }
-  
-        const withinRange = await isWithinDistance(
-          spotId,
-          metadata.latitude,
-          metadata.longitude,
-          100,
-          this.db,
+    if (!isOwner) {
+      if (!metadata.latitude || !metadata.longitude) {
+        throw new BadRequestException(
+          'User location is necessary for this spot. as it is not the spot owner',
         );
-  
-        if (!withinRange) {
-          throw new BadRequestException(
-            'User must be at least 100 meters from the spot to post a photo',
-          );
-        }
       }
 
-
-      const url = await this.imageService.generateUploadUrl({bucket: "spots", mimetype: metadata.mimeType, s3key: s3Key, sizeBytes: metadata.sizeBytes, imageId})
-
-      await this.db.insert(spotsImages).values({
-        imageId,
-        uploadedBy: userId,
+      const withinRange = await isWithinDistance(
         spotId,
-      })
+        metadata.latitude,
+        metadata.longitude,
+        100,
+        this.db,
+      );
 
-      return {url, imageId}
+      if (!withinRange) {
+        throw new BadRequestException(
+          'User must be at least 100 meters from the spot to post a photo',
+        );
+      }
+    }
+
+    const { url, imageId } = await this.imageService.generateUploadUrl({
+      folder: 'spots',
+      mimetype: metadata.mimeType,
+      originalName: metadata.originalName,
+      uniqueId: spot.id,
+      sizeBytes: metadata.sizeBytes,
+    });
+
+    await this.db.insert(spotsImages).values({
+      imageId,
+      uploadedBy: userId,
+      spotId,
+    });
+
+    return { url, imageId };
   }
 
-  async confirmUpload(imageId: string){
-    await this.imageService.confirmImageUpload(imageId)
+  async confirmUpload(imageId: string) {
+    await this.imageService.confirmImageUpload(imageId);
   }
 }

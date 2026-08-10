@@ -5,7 +5,6 @@ import { DrizzleModule } from './drizzle/drizzle.module';
 import { ConfigModule } from '@nestjs/config';
 import { SpotsModule } from './spots/spots.module';
 import { S3Module } from './s3/s3.module';
-import { ImagesModule } from './images/images.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './shared/shared.module';
@@ -16,7 +15,6 @@ import { CommonModule } from './shared/shared.module';
     ConfigModule.forRoot(),
     SpotsModule,
     S3Module,
-    ImagesModule,
     UsersModule,
     AuthModule,
     CommonModule,

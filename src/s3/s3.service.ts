@@ -10,12 +10,17 @@ import {
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { S3_CLIENT } from './s3.constants';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class S3Service {
-  constructor(@Inject(S3_CLIENT) private readonly s3: S3Client) {}
+  constructor(
+    @Inject(S3_CLIENT) private readonly s3: S3Client,
+    private readonly config: ConfigService,
+  ) {}
 
-  async upload(bucket: string, key: string, body: Buffer, mimeType: string) {
+  async upload(key: string, body: Buffer, mimeType: string) {
+    const bucket = this.config.getOrThrow<string>('S3_BUCKET');
     await this.s3.send(
       new PutObjectCommand({
         Bucket: bucket,
@@ -26,7 +31,8 @@ export class S3Service {
     );
   }
 
-  async deleteFolder(bucket: string, prefix: string) {
+  async deleteFolder(prefix: string) {
+    const bucket = this.config.getOrThrow<string>('S3_BUCKET');
     const listed = await this.s3.send(
       new ListObjectsV2Command({ Bucket: bucket, Prefix: prefix }),
     );
@@ -43,11 +49,13 @@ export class S3Service {
     );
   }
 
-  async deleteObject(bucket: string, key: string) {
+  async deleteObject(key: string) {
+    const bucket = this.config.getOrThrow<string>('S3_BUCKET');
     await this.s3.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
   }
 
-  async getPresignedUrl(bucket: string, key: string, expiresIn = 3600) {
+  async getPresignedUrl(key: string, expiresIn: number = 3600) {
+    const bucket = this.config.getOrThrow<string>('S3_BUCKET');
     return getSignedUrl(
       this.s3,
       new GetObjectCommand({ Bucket: bucket, Key: key }),
@@ -55,12 +63,8 @@ export class S3Service {
     );
   }
 
-  async getPresignedUploadUrl(
-    bucket: string,
-    key: string,
-    mimeType: string,
-    expiresIn = 300,
-  ) {
+  async getPresignedUploadUrl(key: string, mimeType: string, expiresIn = 300) {
+    const bucket = this.config.getOrThrow<string>('S3_BUCKET');
     return getSignedUrl(
       this.s3,
       new PutObjectCommand({ Bucket: bucket, Key: key, ContentType: mimeType }),
