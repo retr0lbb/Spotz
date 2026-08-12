@@ -111,11 +111,17 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 - [x] linkar o usuario com a foto de perfil
 - [x] refatorar buckets
 - [x] refatorar classe de imagens
-- [ ] concertar o get spots images
+- [x] ver erro da imagem estar com id diferente do id do bucket // era apenas multicadastro de imagens
 
-- [ ] criar crud basico de usuario com foto de perfil
+- [ ] ver o erro da url da imagem estar vindo com um link para baixar o arquivo ao invez de carregar ele.
+- [ ] remover rotas temporarias delete spot get all pics get all users
+
+- [ ] fazer o get spots images
 - [ ] adicionar o confirm upload na imagem do usuario
+- [ ] criar crud basico de usuario com foto de perfil
+
 - [ ] criar review de spot (144 caracteres tipo twitter e uma pontuação simples de like e dislike. por spot não por foto)
+
 - [ ] criar historico de spots visitados por perfil (destruct)
 - [ ] criar historico de informacoes geograficas para spot
 - [ ] tags para spots? (DESTRUCT)

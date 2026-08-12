@@ -50,6 +50,13 @@
       "when": 1786051184184,
       "tag": "0006_flashy_night_thrasher",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1786569944188,
+      "tag": "0007_giant_stardust",
+      "breakpoints": true
     }
   ]
 }

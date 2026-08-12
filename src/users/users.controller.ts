@@ -25,7 +25,7 @@ export class UsersController {
   @Delete()
   @UseGuards(JwtGuard)
   async deleteUserProfile(@CurrentUser() user: JWTClaims) {
-    await this.userService.deleteUserProfile(user.sub);
+    await this.userService.deleteUserAccount(user.sub);
   }
 
   @UseGuards(JwtGuard)
@@ -35,5 +35,22 @@ export class UsersController {
     @Body() body: ImageMetadataDTO,
   ) {
     return await this.userService.getUploadUrl(user.sub, body);
+  }
+
+  @Get("/all")
+  async getAllUsers(){
+    return this.userService.getAllAccounts()
+  }
+
+  //temp
+  @Get("/pics")
+  async tempGetAllMetadata(){
+    return this.userService.getAllMetadata()
+  }
+
+    //temp
+  @Delete("/pics")
+  async deleteAllMetaDatas(){
+    return this.userService.deleteAll()
   }
 }

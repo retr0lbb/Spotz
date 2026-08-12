@@ -1,7 +1,4 @@
 @baseUrl = http://localhost:3000
-@spotId = 3128d784-59fd-4644-aa09-63c77a9c3fbd
-
-@imageId = c5dad938-1197-4eb8-a775-a1d858cad772
 
 ### Health check
 GET {{baseUrl}}
@@ -43,10 +40,11 @@ Authorization: Bearer {{login.response.body.accessToken}}
 }
 
 ### Buscar spots por raio
+# @name getSpot
 GET {{baseUrl}}/spots?lat=4.2766985&lon=73.51321006&radius=5000
 
 ### Atualizar spot
-PUT {{baseUrl}}/spots/{{spotId}}
+PUT {{baseUrl}}/spots/{{getSpot.response.body.$[0].id}}
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.accessToken}}
 
@@ -55,13 +53,14 @@ Authorization: Bearer {{login.response.body.accessToken}}
 }
 
 ### Deletar spot
-DELETE {{baseUrl}}/spots/{{spotId}}
+DELETE {{baseUrl}}/spots/{{getSpot.response.body.$[0].id}}
+Authorization: Bearer {{login.response.body.accessToken}}
 
 
 # ========================== IMAGENS DO SPOT ==========================
 ### Gerar presigned URL para upload
 # @name presigned
-POST {{baseUrl}}/spots/{{spotId}}/image
+POST {{baseUrl}}/spots/{{getSpot.response.body.$[0].id}}/image
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.accessToken}}
 
@@ -80,18 +79,25 @@ Content-Type: image/jpg
 < ./reggie.webp
 
 ### Confirmar upload
-POST {{baseUrl}}/spots/{{spotId}}/image/{{presigned.response.body.imageId}}/confirm
+POST {{baseUrl}}/spots/{{getSpot.response.body.$[0].id}}/image/{{presigned.response.body.imageId}}/confirm
 
 ### Listar imagens do spot
-GET {{baseUrl}}/spots/{{spotId}}/images
+GET {{baseUrl}}/spots/{{getSpot.response.body.$[0].id}}/images
 
 ### DELETE AN IMAGE FROM A SPOT
-DELETE  {{baseUrl}}/spots/{{spotId}}/images/{{imageId}}
+DELETE  {{baseUrl}}/spots/{{getSpot.response.body.$[0].id}}/images/:imageId
 Authorization: Bearer {{login.response.body.accessToken}}
 
 # ========================== USUARIOS ==========================
 ### PEGA A INFORMACAO DOS USUARIOS
 GET {{baseUrl}}/users
+Authorization: Bearer {{login.response.body.accessToken}}
+
+### PEGA TODOS OS USUARIOS HAHAHA
+GET {{baseUrl}}/users/all
+
+### DELETA UM USUARIO COM SUA FOTO DE PERFIL
+DELETE {{baseUrl}}/users
 Authorization: Bearer {{login.response.body.accessToken}}
 
 ###
@@ -110,3 +116,9 @@ Content-Type: application/json
 PUT {{picture.response.body.url}}
 
 < ./reggie.webp
+
+### GET ALL PICS
+GET {{baseUrl}}/users/pics
+
+### DELETE ALL
+DELETE {{baseUrl}}/users/pics

@@ -108,7 +108,7 @@ export class SpotsService {
       .from(spotsTable)
       .where(eq(spotsTable.id, id));
 
-    if (spot.userId !== userId) {
+    if (spot.userId !== userId && spot.userId !== null) {
       throw new ForbiddenException('Cannot delete a project that is not yours');
     }
 

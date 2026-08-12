@@ -15,6 +15,9 @@ const imageMetadataSchema = z.object({
   uniqueId: z.uuid(),
 });
 
+
+// O image service deve ser o unico gerenciando o ImageMetadata?
+// ver o por que que ta demorando eras para excluir o image metadata no tx
 @Injectable()
 export class ImageService {
   constructor(
@@ -72,6 +75,7 @@ export class ImageService {
       .select()
       .from(imagesMetadata)
       .where(eq(imagesMetadata.id, imageId));
+    
 
     if (!image) {
       return;
@@ -79,7 +83,11 @@ export class ImageService {
 
     await this.db.transaction(async (tx) => {
       await this.s3Service.deleteObject(image.s3Key);
-      await tx.delete(imagesMetadata).where(eq(imagesMetadata.id, image.id));
+      // await tx.delete(imagesMetadata).where(eq(imagesMetadata.id, image.id));
     });
+
+
+    await this.db.delete(imagesMetadata).where(eq(imagesMetadata.id, imageId))
+
   }
 }
