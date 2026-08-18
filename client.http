@@ -43,8 +43,10 @@ Authorization: Bearer {{login.response.body.accessToken}}
 # @name getSpot
 GET {{baseUrl}}/spots?lat=4.2766985&lon=73.51321006&radius=5000
 
+@SpotID = {{getSpot.response.body.spots.$[0].spot_id}}
+
 ### Atualizar spot
-PUT {{baseUrl}}/spots/{{getSpot.response.body.$[0].id}}
+PUT {{baseUrl}}/spots/{{SpotID}}
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.accessToken}}
 
@@ -53,14 +55,14 @@ Authorization: Bearer {{login.response.body.accessToken}}
 }
 
 ### Deletar spot
-DELETE {{baseUrl}}/spots/{{getSpot.response.body.$[0].id}}
+DELETE {{baseUrl}}/spots/{{SpotID}}
 Authorization: Bearer {{login.response.body.accessToken}}
 
 
 # ========================== IMAGENS DO SPOT ==========================
 ### Gerar presigned URL para upload
 # @name presigned
-POST {{baseUrl}}/spots/{{getSpot.response.body.$[0].id}}/image
+POST {{baseUrl}}/spots/{{SpotID}}/image
 Content-Type: application/json
 Authorization: Bearer {{login.response.body.accessToken}}
 
@@ -79,13 +81,13 @@ Content-Type: image/jpg
 < ./reggie.webp
 
 ### Confirmar upload
-POST {{baseUrl}}/spots/{{getSpot.response.body.$[0].id}}/image/{{presigned.response.body.imageId}}/confirm
+POST {{baseUrl}}/spots/{{SpotID}}/image/{{presigned.response.body.imageId}}/confirm
 
 ### Listar imagens do spot
-GET {{baseUrl}}/spots/{{getSpot.response.body.$[0].id}}/images
+GET {{baseUrl}}/spots/{{SpotID}}/images
 
 ### DELETE AN IMAGE FROM A SPOT
-DELETE  {{baseUrl}}/spots/{{getSpot.response.body.$[0].id}}/images/:imageId
+DELETE  {{baseUrl}}/spots/{{SpotID}}/images/:imageId
 Authorization: Bearer {{login.response.body.accessToken}}
 
 # ========================== USUARIOS ==========================

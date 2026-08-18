@@ -7,12 +7,11 @@ import {
   Post,
   Put,
   Query,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { createSpotSchema, type CreateSpotDTO } from './dto/create-spot.dto';
 import { SpotsService } from './spots.service';
-import type { GetAllSpotsQuery } from './dto/getAllSpots.dto';
+import { getAllSpotsQuerySchema, type GetAllSpotsQuery } from './dto/getAllSpots.dto';
 import type { UpdateSpotDTO, UpdateSpotParamsDTO } from './dto/update-spot.dto';
 import { JwtGuard } from '../auth/guards/jwt.guard';
 import { CurrentUser } from '../auth/decorator/current-user.decorator';
@@ -42,7 +41,7 @@ export class SpotsController {
   }
 
   @Get()
-  async getSpot(@Query() query: GetAllSpotsQuery) {
+  async getSpotsNearMe(@Query(new ZodValidationPipe(getAllSpotsQuerySchema)) query: GetAllSpotsQuery) {
     const result = await this.spotsService.getAllSpots(query);
 
     return result;
@@ -96,4 +95,5 @@ export class SpotsController {
   async confirmUpload(@Param('imageId') imageId: string) {
     return await this.spotsService.confirmUpload(imageId);
   }
+
 }

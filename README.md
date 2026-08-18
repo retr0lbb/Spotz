@@ -112,11 +112,12 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 - [x] refatorar buckets
 - [x] refatorar classe de imagens
 - [x] ver erro da imagem estar com id diferente do id do bucket // era apenas multicadastro de imagens
+- [x] melhorar o get spots para retornar uma spot image de começo
 
 - [ ] ver o erro da url da imagem estar vindo com um link para baixar o arquivo ao invez de carregar ele.
 - [ ] remover rotas temporarias delete spot get all pics get all users
 
-- [ ] fazer o get spots images
+- [x] fazer o get spots images
 - [ ] adicionar o confirm upload na imagem do usuario
 - [ ] criar crud basico de usuario com foto de perfil
 

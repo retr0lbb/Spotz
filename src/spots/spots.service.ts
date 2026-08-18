@@ -10,14 +10,19 @@ import { CreateSpotDTO } from './dto/create-spot.dto';
 import { UpdateSpotDTO } from './dto/update-spot.dto';
 import { spotsTable, usersTable } from '../drizzle/schemas';
 import { GetAllSpotsQuery } from './dto/getAllSpots.dto';
-import { sql, eq } from 'drizzle-orm';
+import { sql, eq, param } from 'drizzle-orm';
 import { S3Service } from '../s3/s3.service';
 import {
+  decodeCursor,
+  decodeSpotsCursor,
+  encodeSpotsCursor,
   isWithinDistance,
   spotsImages,
 } from '../drizzle/schemas/spots-images.schema';
 import { ImageService } from '../shared/services/image.service';
 import type { ImageMetadataDTO } from './dto/image-spot.dto';
+import { QueryResult } from 'pg';
+import ur from 'zod/v4/locales/ur.js';
 
 @Injectable()
 export class SpotsService {
@@ -52,18 +57,106 @@ export class SpotsService {
   }
 
   async getAllSpots(params: GetAllSpotsQuery) {
-    const spots = await this.db.execute(
+
+    type QueryResponse = {
+      spot_id: string
+      user_id: string
+      alias: string
+      description: string
+      address: string
+      spot_created_at: string
+      location_text: string
+      distance_meters: string
+      spot_image_id: string
+      image_id: string
+      s3_key: string 
+      image_created_at: string
+      size_bytes: number,
+      mime_type: string
+    }
+
+    const decodedCursor = params.cursor ? decodeSpotsCursor(params.cursor) : undefined
+  const spots: QueryResult<QueryResponse> = await this.db.execute(
       sql`
-        SELECT 
-          *, 
-          ST_AsText(location) as location_text,
-          ROUND(ST_Distance(location, ST_MakePoint(${params.lon}, ${params.lat})::geography)::numeric, 0) as distance_meters 
-        FROM spots
-        WHERE ST_DWithin(location, ST_MakePoint(${params.lon ?? 0}, ${params.lat})::geography, ${params.radius})
+        WITH nearby AS (
+          SELECT 
+            s.id,
+            s.user_id,
+            s.alias,
+            s.description,
+            s.address,
+            s.created_at,
+            ST_AsText(location) as location_text,
+            ROUND(ST_Distance(location, ST_MakePoint(${params.lon}, ${params.lat})::geography)::numeric, 0) as distance_meters
+          FROM spots s
+          WHERE ST_DWithin(location, ST_MakePoint(${params.lon}, ${params.lat})::geography, ${params.radius})
+        )
+        SELECT
+          n.id AS spot_id,
+          n.user_id,
+          n.alias,
+          n.description,
+          n.address,
+          n.created_at AS spot_created_at,
+          n.location_text,
+          n.distance_meters,
+          img.spot_image_id,
+          img.image_id,
+          img.s3_key,
+          img.image_created_at,
+          img.size_bytes,
+          img.mime_type
+        FROM nearby n
+        LEFT JOIN LATERAL (
+          SELECT
+            si.id AS spot_image_id,
+            si.image_id,
+            mt.s3_key,
+            mt.created_at AS image_created_at,
+            mt.size_bytes,
+            mt.mime_type
+          FROM spots_images si
+          JOIN images_metadata mt ON si.image_id = mt.id
+          WHERE si.spot_id = n.id
+          ORDER BY si.created_at ASC
+          LIMIT 1
+        ) img ON true
+        WHERE ${
+
+          decodedCursor ? sql`(
+            n.distance_meters > ${decodedCursor.distance}
+            OR (n.distance_meters = ${decodedCursor.distance} AND n.id::text > ${decodedCursor.id})
+          )` :sql`true`
+        }
+        ORDER BY n.distance_meters ASC
+        LIMIT ${params.limit + 1}
       `,
     );
 
-    return spots.rows;
+    const hasNextPage = spots.rows.length > params.limit;
+    const items = hasNextPage ? spots.rows.slice(0, params.limit) : spots.rows;
+    const lastSpot = items[items.length - 1];
+
+    const nextCursor = hasNextPage
+      ? encodeSpotsCursor({ distance: lastSpot.distance_meters as unknown as number, id: lastSpot.spot_id as unknown as string })
+      : null;
+
+    const spotsWithUrl = await Promise.all(
+      items.map(async ({ s3_key, ...rest }) => {
+        const url = await this.imageService.getImageUrl(s3_key);
+
+        if (!url) {
+          throw new BadRequestException('Cant generate url');
+        }
+
+        return {
+          ...rest,
+          image_url: url,
+        };
+      }),
+    );
+
+    return { spots: spotsWithUrl, nextCursor, perPage: params.limit, items: items.length };
   }
 
   async updateSpot(id: string, userId: string, payload: UpdateSpotDTO) {
