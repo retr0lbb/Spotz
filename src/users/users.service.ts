@@ -10,6 +10,7 @@ import { eq } from 'drizzle-orm';
 import { S3Service } from '../s3/s3.service';
 import { ImageMetadataDTO } from './dto/image.dto';
 import { ImageService } from '../shared/services/image.service';
+import { throws } from 'assert';
 
 @Injectable()
 export class UsersService {
@@ -92,44 +93,45 @@ export class UsersService {
     if(!user){
       return
     }
-    console.log("HERE 1")
 
     if(user.pictureId !== null){
-      console.log("HERE 2")
 
       const [image] = await this.db.select().from(imagesMetadata).where(eq(imagesMetadata.id, user.pictureId))
 
       await this.db.transaction(async (tx) => {
         await tx.delete(usersTable).where(eq(usersTable.id, userId))
-        console.log("HERE 2.5")
         await this.imageService.deleteImage(image.id)
-        console.log("HERE 2.7")
       })
-      console.log("HERE 3")
-
 
       return
     }
-    console.log("HERE 4")
-
 
     await this.db.delete(usersTable).where(eq(usersTable.id, userId))
-    console.log("HERE 5")
   }
 
-  async getAllAccounts(){
-    const data = await this.db.select().from(usersTable)
+  async confirmUserProfilePicture(userId: string){
+    const [user] = await this.db.select().from(usersTable).where(eq(usersTable.id, userId))
 
-    return data
-  }
+    if(!user){
+      throw new NotFoundException("User Not found")
+    }
 
-  async getAllMetadata(){
-    const data = await this.db.select().from(imagesMetadata)
+    if(user.pictureId === null){
+      throw new NotFoundException("Users Picture Id not found")
+    }
 
-    return data
-  }
+    const [image] = await this.db.select().from(imagesMetadata).where(eq(imagesMetadata.id, user.pictureId))
 
-  async deleteAll(){
-    await this.db.delete(imagesMetadata)
+    if(image.status !== "pending"){
+      return
+    }
+
+    if(!image.s3Key){
+      throw new BadRequestException("Image not uploaded successfully")
+    }
+
+    await this.db.update(imagesMetadata).set({status: "active"}).where(eq(imagesMetadata.id, image.id))
+    
+    return
   }
 }

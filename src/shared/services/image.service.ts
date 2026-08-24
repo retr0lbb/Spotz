@@ -66,7 +66,10 @@ export class ImageService {
       .where(eq(imagesMetadata.id, imageId));
   }
 
-  async getImageUrl(key: string) {
+  async getImageUrl(key: string | null) {
+    if(!key){
+      return null
+    }
     return await this.s3Service.getPresignedUrl(key, 300);
   }
 

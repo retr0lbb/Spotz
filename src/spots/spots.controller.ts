@@ -91,6 +91,13 @@ export class SpotsController {
     return { uploadUrl: data.url, imageId: data.imageId };
   }
 
+  @Get("/:id/image")
+  async getSpotsImages(@Param("id") spotId: string){
+    const images = this.spotsService.getSpotsImages(spotId)
+
+    return images
+  }
+
   @Post('/:id/image/:imageId/confirm')
   async confirmUpload(@Param('imageId') imageId: string) {
     return await this.spotsService.confirmUpload(imageId);

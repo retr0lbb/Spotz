@@ -8,9 +8,9 @@ import {
 import { DRIZZLE, type DrizzleDB } from '../drizzle/drizzle.module';
 import { CreateSpotDTO } from './dto/create-spot.dto';
 import { UpdateSpotDTO } from './dto/update-spot.dto';
-import { spotsTable, usersTable } from '../drizzle/schemas';
+import { imagesMetadata, spotsTable, usersTable } from '../drizzle/schemas';
 import { GetAllSpotsQuery } from './dto/getAllSpots.dto';
-import { sql, eq, param } from 'drizzle-orm';
+import { sql, eq, param, and } from 'drizzle-orm';
 import { S3Service } from '../s3/s3.service';
 import {
   decodeCursor,
@@ -20,9 +20,11 @@ import {
   spotsImages,
 } from '../drizzle/schemas/spots-images.schema';
 import { ImageService } from '../shared/services/image.service';
-import type { ImageMetadataDTO } from './dto/image-spot.dto';
+import type { getSpotsImagesReturnDTO, ImageMetadataDTO, SpotsImages } from './dto/image-spot.dto';
 import { QueryResult } from 'pg';
 import ur from 'zod/v4/locales/ur.js';
+import { error } from 'console';
+import { SpotsModule } from './spots.module';
 
 @Injectable()
 export class SpotsService {
@@ -145,13 +147,10 @@ export class SpotsService {
       items.map(async ({ s3_key, ...rest }) => {
         const url = await this.imageService.getImageUrl(s3_key);
 
-        if (!url) {
-          throw new BadRequestException('Cant generate url');
-        }
 
         return {
           ...rest,
-          image_url: url,
+          image_url: url ?? null,
         };
       }),
     );
@@ -282,5 +281,63 @@ export class SpotsService {
 
   async confirmUpload(imageId: string) {
     await this.imageService.confirmImageUpload(imageId);
+  }
+
+  async getSpotsImages(spotId: string): Promise<getSpotsImagesReturnDTO>{
+    const [spot] = await this.db.select().from(spotsTable).where(eq(spotsTable.id, spotId))
+
+    if(!spot){
+      throw new NotFoundException("Spot not found")
+    }
+
+    const profileImages = this.db.$with("profile_images").as(
+      this.db.select({
+        userId: usersTable.id,
+        profilePictureS3Key: imagesMetadata.s3Key
+      })
+      .from(usersTable)
+      .leftJoin(imagesMetadata, 
+        and(
+          eq(usersTable.pictureId, imagesMetadata.id),
+          eq(imagesMetadata.status, "active"),
+        ),
+      )
+
+    )
+
+    const images = await this.db.with(profileImages).select({
+      id: spotsImages.id,
+      s3key: imagesMetadata.s3Key,
+      uploadedAt: imagesMetadata.createdAt,
+      sizeBytes: imagesMetadata.sizeBytes,
+      status: imagesMetadata.status,
+      mimeType: imagesMetadata.mimeType,
+      userName: usersTable.username,
+      profilePictureS3key: profileImages.profilePictureS3Key
+
+    })
+      .from(spotsImages)
+      .leftJoin(usersTable, eq(spotsImages.uploadedBy, usersTable.id))
+      .leftJoin(imagesMetadata, eq(spotsImages.imageId, imagesMetadata.id))
+      .leftJoin(profileImages, eq(usersTable.id, profileImages.userId))
+      .where(and(eq(spotsImages.spotId, spot.id), eq(imagesMetadata.status, "active")))
+
+    const imagesWithUrls = await Promise.all(
+      images.map(async ({profilePictureS3key, s3key, id, ...rest}) => {
+        const [imageUrl, pictureUrl] = await Promise.all([
+          await this.imageService.getImageUrl(s3key),
+          await this.imageService.getImageUrl(profilePictureS3key),
+        ])
+
+        return {
+          imageId: id,
+          ...rest,
+          imageUrl,
+          pictureUrl
+        } as SpotsImages
+      })
+    )
+
+    return { ...spot, images: imagesWithUrls} as getSpotsImagesReturnDTO
   }
 }

@@ -34,8 +34,8 @@ Authorization: Bearer {{login.response.body.accessToken}}
 {
     "lat": "4.2726784",
     "lon": "73.5132004",
-    "alias": "Lake Winston",
-    "description": "Vista do lago winston na escocia. vista de cima do lago ideal para um piquenique",
+    "alias": "Lake Chargoggagoggmanchauggagoggchaubunagungamaugg",
+    "description": "Vista do lago Webster em massachusets. vista de cima do lago ideal para um piquenique",
     "address": "R. Royal vista, 1829. Aurora lane"
 }
 
@@ -69,22 +69,22 @@ Authorization: Bearer {{login.response.body.accessToken}}
 {
     "mimeType": "image/jpg",
     "sizeBytes": 15728640,
-    "originalName": "reggie.webp",
-    "latitude": 4.2726784,
-    "longitude": 73.5132004
+    "originalName": "test.jpg"
+    # "latitude": 4.2726784,
+    # "longitude": 73.5132004
 }
 
 ### Upload da imagem (cole a uploadUrl retornada acima)
 PUT {{presigned.response.body.uploadUrl}}
 Content-Type: image/jpg
 
-< ./reggie.webp
+< ./test.jpg
 
 ### Confirmar upload
 POST {{baseUrl}}/spots/{{SpotID}}/image/{{presigned.response.body.imageId}}/confirm
 
 ### Listar imagens do spot
-GET {{baseUrl}}/spots/{{SpotID}}/images
+GET {{baseUrl}}/spots/{{SpotID}}/image
 
 ### DELETE AN IMAGE FROM A SPOT
 DELETE  {{baseUrl}}/spots/{{SpotID}}/images/:imageId
@@ -116,8 +116,15 @@ Content-Type: application/json
 
 ### Upload da imagem
 PUT {{picture.response.body.url}}
+Content-Type: image/webp
 
 < ./reggie.webp
+
+
+### CONFIRM USER PROFILE PICTURE UPLOAD
+POST {{baseUrl}}/users/picture/confirm
+Authorization: Bearer {{login.response.body.accessToken}}
+
 
 ### GET ALL PICS
 GET {{baseUrl}}/users/pics

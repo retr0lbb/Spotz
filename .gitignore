@@ -12,9 +12,10 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
-test.png
-test.jpg
-reggie.webp
+*.png
+*.webp
+*.jpeg
+*.jpg
 
 # OS
 .DS_Store

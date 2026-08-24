@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Post,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { JwtGuard } from '../auth/guards/jwt.guard';
@@ -37,20 +36,12 @@ export class UsersController {
     return await this.userService.getUploadUrl(user.sub, body);
   }
 
-  @Get("/all")
-  async getAllUsers(){
-    return this.userService.getAllAccounts()
-  }
 
-  //temp
-  @Get("/pics")
-  async tempGetAllMetadata(){
-    return this.userService.getAllMetadata()
-  }
+  @Post("/picture/confirm")
+  @UseGuards(JwtGuard)
+  async confirmUserProfilePictureUpload(@CurrentUser() user: JWTClaims){
+    await this.userService.confirmUserProfilePicture(user.sub)
 
-    //temp
-  @Delete("/pics")
-  async deleteAllMetaDatas(){
-    return this.userService.deleteAll()
+    return "ok"
   }
 }

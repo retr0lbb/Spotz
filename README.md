@@ -99,26 +99,14 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 
 
 ## Features
-- [x] permitir que o usuário poste fotos no spot des de que esteja a menos de 100 metros de distancia no futuro trocar para que seja visitado nas ultimas 24 horas.
-- [x] mostrar o id de quem enviou a foto na resposta do corpo e mostrar o status da foto se foi confirmada ou nao no corpo.
-- [x] modificar a funcao de pegar fotos do spot para poder adicionar filtro de userid enviado para o spot.
-- [x] adicionar cursor based pagination no spots images
-- [x] adicionar funcao de excluir spot e excluir as imagens junto
-- [x] concertar a busca por ownerId na imagem
-- [x] fazer upload da imagem de perfil
-- [x] concertar acumulo de responsabilidades em image service extrapolar para gera presigned, upload get e delete e etc
-- [x] concertar o sizebytes que nao esta sendo passado no image metadata
-- [x] linkar o usuario com a foto de perfil
-- [x] refatorar buckets
-- [x] refatorar classe de imagens
-- [x] ver erro da imagem estar com id diferente do id do bucket // era apenas multicadastro de imagens
 - [x] melhorar o get spots para retornar uma spot image de começo
-
-- [ ] ver o erro da url da imagem estar vindo com um link para baixar o arquivo ao invez de carregar ele.
-- [ ] remover rotas temporarias delete spot get all pics get all users
-
 - [x] fazer o get spots images
-- [ ] adicionar o confirm upload na imagem do usuario
+- [x] ver o erro da url da imagem estar vindo com um link para baixar o arquivo ao invez de carregar ele. erro de content type
+- [x] remover rotas temporarias delete spot get all pics get all users
+- [x] adicionar o confirm upload na imagem do usuario
+
+- [x] recriar get spot imagens agora com cursor based e usuarios que postaram
+
 - [ ] criar crud basico de usuario com foto de perfil
 
 - [ ] criar review de spot (144 caracteres tipo twitter e uma pontuação simples de like e dislike. por spot não por foto)
