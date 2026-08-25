@@ -34,7 +34,7 @@ Authorization: Bearer {{login.response.body.accessToken}}
 {
     "lat": "4.2726784",
     "lon": "73.5132004",
-    "alias": "Lake Chargoggagoggmanchauggagoggchaubunagungamaugg",
+    "alias": "Lake Webster",
     "description": "Vista do lago Webster em massachusets. vista de cima do lago ideal para um piquenique",
     "address": "R. Royal vista, 1829. Aurora lane"
 }

@@ -105,7 +105,9 @@ Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
 - [x] remover rotas temporarias delete spot get all pics get all users
 - [x] adicionar o confirm upload na imagem do usuario
 
-- [x] recriar get spot imagens agora com cursor based e usuarios que postaram
+- [x] recriar get spot imagens
+
+- [ ] adicionar cursor ao getSpotsImages
 
 - [ ] criar crud basico de usuario com foto de perfil
 
